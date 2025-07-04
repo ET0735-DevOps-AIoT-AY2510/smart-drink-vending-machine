@@ -79,8 +79,9 @@ def keypad_press_lcd_display():
                     LCD.lcd_display_string(drink["name"]+" "+drink["price"],1)
                     LCD.lcd_display_string("1=Card 2=QR Code",2)
                     waiting_for_payment = True
-                    if key == "#":
+                    if key == "*":
                         homescreen()
+                        waiting_for_payment=False
 
                 else: #drink no stock
                     LCD.lcd_display_string("Drink out",1)
