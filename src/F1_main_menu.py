@@ -48,10 +48,13 @@ def homescreen():
     LCD.lcd_display_string("select a drink", 2)
     
 def keypad_press_lcd_display():
+    waiting_for_payment = False
     storeSelection=[]
     while True:
         key=shared_keypad_queue.get() #gets key from queue
         keyvalue= str(key) #convert key int to key string
+        if waiting_for_payment:
+            continue
 
         if len(storeSelection)>5: #entered number is greater than admin code
             LCD.lcd_clear()
@@ -75,6 +78,7 @@ def keypad_press_lcd_display():
                     LCD.lcd_clear()
                     LCD.lcd_display_string(drink["name"]+" "+drink["price"],1)
                     LCD.lcd_display_string("1=Card 2=QR Code",2)
+                    waiting_for_payment = True
 
                 else: #drink no stock
                     LCD.lcd_display_string("Drink out",1)
@@ -93,6 +97,7 @@ def keypad_press_lcd_display():
             storeSelection=[]   #clears array cuz im lazy to check if i forgot to clear when necessary
             
         else:
+            LCD.lcd_clear()
             storeSelection.append(keyvalue) #stores most recent key press into array
             LCD.lcd_display_string("".join(storeSelection),1) #displays key on lcd (cummulative)
             
