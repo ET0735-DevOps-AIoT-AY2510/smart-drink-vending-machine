@@ -66,7 +66,7 @@ def keypad_press_lcd_display():
             if key == 1:
                 LCD.lcd_clear()
                 LCD.lcd_display_string("card", 1)
-                time.sleep(2)
+                time.sleep(5)
                 #put card payment here
                 homescreen()
                 waiting_for_payment = False
@@ -74,7 +74,7 @@ def keypad_press_lcd_display():
             elif key == 2:
                 LCD.lcd_clear()
                 LCD.lcd_display_string("qr code", 1)
-                time.sleep(2)
+                time.sleep(5)
                 #put qr code payment here
                 homescreen()
                 waiting_for_payment = False
@@ -85,7 +85,7 @@ def keypad_press_lcd_display():
             LCD.lcd_clear()
             LCD.lcd_display_string("Invalid number,",1)
             LCD.lcd_display_string("please retry",2)
-            time.sleep(3)
+            time.sleep(5)
             LCD.lcd_clear()
             storeSelection=[]
 
@@ -104,14 +104,14 @@ def keypad_press_lcd_display():
                 else: #drink no stock
                     LCD.lcd_display_string("Drink out",1)
                     LCD.lcd_display_string("of stock",2)
-                    time.sleep(3)
+                    time.sleep(5)
                     LCD.lcd_clear()
                     storeSelection=[]
 
             else: #drink number doesnt exist
                 LCD.lcd_display_string("Invalid, Please",1)
                 LCD.lcd_display_string("try again",2)
-                time.sleep(3)
+                time.sleep(5)
                 LCD.lcd_clear()
                 storeSelection=[]
 
