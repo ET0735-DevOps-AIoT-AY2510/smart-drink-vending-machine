@@ -15,7 +15,7 @@ drink_database = {
 
 def main():
     keypad.init(key_pressed)
-    LCD.lcd()
+    LCD=LCD.lcd()
 
 
     keypad_thread = Thread(target=keypad.get_key) #constantly gets key
@@ -25,6 +25,8 @@ def main():
     keypad_press_lcd_display()
 
 def key_pressed(key): #puts key into queue
+    global last_key_time
+    last_key_time=time.time()
     shared_keypad_queue.put(key)
 
 def homescreen():
@@ -45,6 +47,9 @@ def keypad_press_lcd_display():
             LCD.lcd_display_string("please retry",2)
             time.sleep(3)
             LCD.lcd_clear()
+            storeSelection=[]
+        elif time.time()- last_key_time > 30:
+            homescreen()
             storeSelection=[]
 
         elif key == "*": #clear lcd when * is pressed and reset key array
