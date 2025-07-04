@@ -5,6 +5,8 @@ from hal import hal_lcd as LCD
 from hal import hal_keypad as keypad
 
 shared_keypad_queue = queue.Queue()
+global last_key_time
+last_key_time=time.time()
 
 drink_database = {
     1: {"name" : "Coke", "price" : "1.50", "stock" : 4},
@@ -15,11 +17,14 @@ drink_database = {
 
 def main():
     keypad.init(key_pressed)
+    global LCD
     LCD=LCD.lcd()
 
 
     keypad_thread = Thread(target=keypad.get_key) #constantly gets key
     keypad_thread.start()
+    inactivity_thread=Thread(target=inactivity_check)
+    inactivity_thread.start()
 
     homescreen()
     keypad_press_lcd_display()
@@ -28,6 +33,14 @@ def key_pressed(key): #puts key into queue
     global last_key_time
     last_key_time=time.time()
     shared_keypad_queue.put(key)
+    
+
+def inactivity_check():
+    global last_key_time
+    while True:
+        if time.time() - last_key_time > 30:
+            homescreen()
+            last_key_time = time.time() # reset to avoid repeated homescreen calls
 
 def homescreen():
     LCD.lcd_clear()
@@ -35,7 +48,6 @@ def homescreen():
     LCD.lcd_display_string("select a drink", 2)
     
 def keypad_press_lcd_display():
-    LCD.lcd_clear()
     storeSelection=[]
     while True:
         key=shared_keypad_queue.get() #gets key from queue
@@ -47,9 +59,6 @@ def keypad_press_lcd_display():
             LCD.lcd_display_string("please retry",2)
             time.sleep(3)
             LCD.lcd_clear()
-            storeSelection=[]
-        elif time.time()- last_key_time > 30:
-            homescreen()
             storeSelection=[]
 
         elif key == "*": #clear lcd when * is pressed and reset key array
