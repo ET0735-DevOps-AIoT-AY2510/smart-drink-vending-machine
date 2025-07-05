@@ -16,14 +16,14 @@ def main():
     elapsed = time.time()
     security_prompt = True
     servo.init()
-    buzzer.init()
-    led.init()
     lcd = LCD.lcd()
     ir_sensor.init()
     keypad.init(key_pressed)
     keypad_thread = Thread(target=keypad.get_key)
-    keypad.daemon = True
+    keypad_thread.daemon = True
     keypad_thread.start()
+    security_thread = Thread(target=ledandbuzzer)
+    security_thread.start()
     while time.time() - elapsed <= 10 and not ir_sensor.get_ir_sensor_state():
         if (time.time() - elapsed >= 5):
             security_check()
@@ -35,11 +35,13 @@ def main():
 
 
 def key_pressed(key):
-    active.append(key)
+    if (time.time() - elapsed >= 5):
+        active.append(key)
 
 
 def unlock_door():
     global active
+    ledandbuzzer_event.clear()
     servo.set_servo_position(90)
     lcd.lcd_clear()
     lcd.lcd_display_string("Door Unlocked", 1)
@@ -51,15 +53,14 @@ def security_check():
     if active:
         elapsed = time.time()
     elif not security_prompt:
-        security_thread = Thread(target=ledandbuzzer)
-        security_thread.start()
+        ledandbuzzer_event.set()
         lcd.lcd_clear()
         lcd.lcd_display_string("Still there?", 1)
         lcd.lcd_display_string("Click anything", 2)
 
 
 def timeout():
-    ledandbuzzer_event.set()
+    ledandbuzzer_event.clear()
     if (not ir_sensor.get_ir_sensor_state()):
         servo.set_servo_position(0)
     lcd.lcd_clear()
@@ -68,12 +69,17 @@ def timeout():
 
 
 def ledandbuzzer():
-    while not ledandbuzzer_event.is_set():
-        buzzer.beep(0.5, 0.1, 1)
-        led.set_output(1, 1)
-        time.sleep(0.1)
-        led.set_output(1, 0)
-        time.sleep(0.1)
+    buzzer.init()
+    led.init()
+    while True:  # Always running, react to event state inside
+        if ledandbuzzer_event.is_set():  # Correct: run while event is set
+            buzzer.beep(0.5, 0.1, 0)
+            led.set_output(1, 1)
+            time.sleep(0.1)
+            led.set_output(1, 0)
+            time.sleep(0.1)
+        else:
+            time.sleep(0.1)  # Idle wait if not triggered
 
 
 if __name__ == '__main__':
