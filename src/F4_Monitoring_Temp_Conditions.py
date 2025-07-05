@@ -17,6 +17,8 @@ email_address = 'devopsgroup2project@gmail.com'
 email_password = 'imks ngdl jfte ksey'
 
 def main():
+    global LCD
+    LCD=LCD.lcd()
     led.init()
     temp_humid.init()
 
@@ -32,7 +34,7 @@ def tempGet(): #constantly gets temp through thread in main
         time.sleep(2) #prevent lag?
 
 def temp_Monitor():
-    global check10, check20, purchaseCheck
+    global check10, check20, purchaseCheck, LCD
     waiting_for_payment = False
     while True:
         if temp>=10 and check10 == 0: #only emails staff
