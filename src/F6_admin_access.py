@@ -6,12 +6,13 @@ from hal import hal_led as led
 from hal import hal_lcd as LCD
 from hal import hal_ir_sensor as ir_sensor
 from hal import hal_keypad as keypad
-
+disable_burglar = False
 ledandbuzzer_event = Event()
 
 
 def main():
-    global active, lcd, elapsed, security_prompt
+    global active, lcd, elapsed, security_prompt, ledandbuzzer_event, disable_burglar
+    disable_burglar = True
     active = [1]
     elapsed = time.time()
     security_prompt = True
@@ -32,6 +33,7 @@ def main():
             unlock_door()
             security_prompt = False
     timeout()
+    disable_burglar = False
 
 
 def key_pressed(key):
@@ -76,9 +78,10 @@ def ledandbuzzer():
             buzzer.beep(0.5, 0.1, 0)
             led.set_output(1, 1)
             time.sleep(0.1)
-            led.set_output(1, 0)
+            led.set_output(1, 1)
             time.sleep(0.1)
         else:
+            led.set_output(1, 0)
             time.sleep(0.1)  # Idle wait if not triggered
 
 
