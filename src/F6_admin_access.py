@@ -6,13 +6,13 @@ from hal import hal_led as led
 from hal import hal_lcd as LCD
 from hal import hal_ir_sensor as ir_sensor
 from hal import hal_keypad as keypad
-disable_burglar = False
+BurglarCheck = False
 ledandbuzzer_event = Event()
 
 
 def main():
-    global active, lcd, elapsed, security_prompt, ledandbuzzer_event, disable_burglar
-    disable_burglar = True
+    global active, lcd, elapsed, security_prompt, ledandbuzzer_event, BurglarCheck
+    BurglarCheck = True
     active = [1]
     elapsed = time.time()
     security_prompt = True
@@ -20,10 +20,9 @@ def main():
     lcd = LCD.lcd()
     ir_sensor.init()
     keypad.init(key_pressed)
-    keypad_thread = Thread(target=keypad.get_key)
-    keypad_thread.daemon = True
+    keypad_thread = Thread(target=keypad.get_key, daemon=True)
     keypad_thread.start()
-    security_thread = Thread(target=ledandbuzzer)
+    security_thread = Thread(target=ledandbuzzer, daemon=True)
     security_thread.start()
     while time.time() - elapsed <= 10 and not ir_sensor.get_ir_sensor_state():
         if (time.time() - elapsed >= 5):
@@ -33,7 +32,7 @@ def main():
             unlock_door()
             security_prompt = False
     timeout()
-    disable_burglar = False
+    BurglarCheck = False
 
 
 def key_pressed(key):
@@ -67,6 +66,7 @@ def timeout():
         servo.set_servo_position(0)
     lcd.lcd_clear()
     lcd.lcd_display_string("Locking Door", 1)
+    led.set_output(1, 0)
     time.sleep(3)
 
 
@@ -75,14 +75,11 @@ def ledandbuzzer():
     led.init()
     while True:  # Always running, react to event state inside
         if ledandbuzzer_event.is_set():  # Correct: run while event is set
-            buzzer.beep(0.5, 0.1, 0)
+            buzzer.beep(0.5, 0.05, 0)
             led.set_output(1, 1)
-            time.sleep(0.1)
-            led.set_output(1, 1)
-            time.sleep(0.1)
-        else:
+            time.sleep(0.05)
             led.set_output(1, 0)
-            time.sleep(0.1)  # Idle wait if not triggered
+            time.sleep(0.05)
 
 
 if __name__ == '__main__':
