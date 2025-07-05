@@ -14,6 +14,7 @@ drink_database = {
     13: {"name" : "Lemon Tea", "price" : "1.70", "stock" : 1}
 }
 
+global drink
 
 def main():
     keypad.init(key_pressed)
@@ -91,6 +92,7 @@ def keypad_press_lcd_display():
 
         elif key == "#": 
             selection=int("".join(storeSelection)) #turn storeSelection array into int variable
+            global drink
 
             if selection in drink_database: #drink number exists
                 drink = drink_database[selection] 
