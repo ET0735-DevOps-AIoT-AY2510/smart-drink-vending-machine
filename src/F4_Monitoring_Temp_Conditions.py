@@ -36,7 +36,7 @@ def tempGet(): #constantly gets temp through thread in main
 
 def ledBlink():
     global temp
-    while True:
+    while purchaseCheck == 0:
         if temp >= 20:
             led.set_output(24,10)
             time.sleep(0.2)
@@ -74,18 +74,15 @@ def temp_Monitor():
             waiting_for_payment = False
             check20=0
 
-        if purchaseCheck == 0 and not out_of_order:
+        if (purchaseCheck == 0 and not out_of_order) and temp>=20:
                 LCD.lcd_clear()
                 LCD.lcd_display_string("Machine out", 1)
                 LCD.lcd_display_string("of order", 2)
                 out_of_order = True
+                waiting_for_payment = True
 
         elif purchaseCheck == 1:
             out_of_order = False
-
-        else:
-            waiting_for_payment = True  #remove after implementing purchase check is implemented
-            print("placeholder")
 
 
 def email_content(whatMsg): #defining email content
