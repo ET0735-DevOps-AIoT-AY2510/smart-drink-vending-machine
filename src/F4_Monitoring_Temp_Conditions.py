@@ -48,16 +48,7 @@ def temp_Monitor():
     waiting_for_payment = False
     out_of_order = False
     while True:
-        if temp>=10 and check10 == 0: #only emails staff
-            msg = email_content(10)
-
-            with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
-                smtp.login(email_address, email_password)
-                smtp.send_message(msg)
-
-            check10=1
-
-        elif temp >= 20 and check20 == 0: #emails staff, blinks led at 2 Hz
+        if temp >= 20 and check20 == 0: #emails staff, blinks led at 2 Hz
             msg = email_content(20)
             with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
                 smtp.login(email_address, email_password)
@@ -66,6 +57,15 @@ def temp_Monitor():
 
             check20 = 1
             check10 = 1
+        
+        elif temp>=10 and check10 == 0: #only emails staff
+            msg = email_content(10)
+
+            with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+                smtp.login(email_address, email_password)
+                smtp.send_message(msg)
+
+            check10=1
 
         if temp<10:
             check10=0
