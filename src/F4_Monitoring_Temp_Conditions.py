@@ -22,9 +22,9 @@ def main():
     led.init()
     temp_humid.init()
 
-    temp_check_thread=Thread(target=tempGet)
+    temp_check_thread=Thread(target=tempGet, daemon = True)
     temp_check_thread.start()
-    temp_Monitor_thread=Thread(target=temp_Monitor)
+    temp_Monitor_thread=Thread(target=temp_Monitor, daemon = True)
     temp_Monitor_thread.start()
 
 def tempGet(): #constantly gets temp through thread in main
