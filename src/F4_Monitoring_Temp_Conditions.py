@@ -32,7 +32,7 @@ def tempGet(): #constantly gets temp through thread in main
     global temp
     while True:
         temp, _ =temp_humid.read_temp_humidity()
-        time.sleep(2) #prevent lag?
+        time.sleep(5) #prevent lag?
 
 def ledBlink():
     global temp
