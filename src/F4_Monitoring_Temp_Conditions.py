@@ -26,12 +26,22 @@ def main():
     temp_check_thread.start()
     temp_Monitor_thread=Thread(target=temp_Monitor, daemon = True)
     temp_Monitor_thread.start()
+    ledBlink_thread=Thread(target=ledBlink,daemon=True)
+    ledBlink_thread.start()
 
 def tempGet(): #constantly gets temp through thread in main
     global temp
     while True:
         temp, _ =temp_humid.read_temp_humidity()
         time.sleep(2) #prevent lag?
+
+def ledBlink():
+    while True:
+        if temp >= 20:
+            led.set_output(24,10)
+            time.sleep(0.2)
+            led.set_output(24,0)
+            time.sleep(0.2)
 
 def temp_Monitor():
     global check10, check20, purchaseCheck, LCD
@@ -52,20 +62,6 @@ def temp_Monitor():
                 smtp.login(email_address, email_password)
                 smtp.send_message(msg)
 
-            if purchaseCheck == 0:
-                LCD.lcd_clear()
-                LCD.lcd_display_string("Machine out", 1)
-                LCD.lcd_display_string("of order", 2)
-                
-                if temp >= 20:
-                    led.set_output(24,10)
-                    time.sleep(0.5)
-                    led.set_output(24,0)
-                    time.sleep(0.5)
-
-            else:
-                waiting_for_payment = True
-                print("placeholder")
 
             check20 = 1
             check10 = 1
@@ -74,6 +70,16 @@ def temp_Monitor():
             waiting_for_payment = False
             check10=0
             check20=0
+
+        if purchaseCheck == 0:
+                LCD.lcd_clear()
+                LCD.lcd_display_string("Machine out", 1)
+                LCD.lcd_display_string("of order", 2)
+
+        else:
+            waiting_for_payment = True  #remove after implementing purchase check is implemented
+            print("placeholder")
+
 
 def email_content(whatMsg): #defining email content
     msg = EmailMessage()
