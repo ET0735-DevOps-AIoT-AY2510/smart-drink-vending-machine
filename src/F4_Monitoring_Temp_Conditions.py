@@ -32,7 +32,6 @@ def ledBlink():
             time.sleep(0.2)
 
 def temp_Monitor():
-    g.waiting_for_payment = False
     out_of_order = False
     while True:
         if g.temp >= 20 and g.check20 == 0: #emails staff, blinks led at 2 Hz
@@ -58,7 +57,6 @@ def temp_Monitor():
             g.check10=0
 
         elif g.temp<20:
-            g.waiting_for_payment = False
             g.check20=0
 
         if (g.purchaseCheck == 0 and not out_of_order) and g.temp>=20:
