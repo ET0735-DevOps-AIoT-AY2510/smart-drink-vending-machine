@@ -58,8 +58,7 @@ def security_check():
 
 def timeout():
     g.stillthere_event.clear()
-    if (not ir_sensor.get_ir_sensor_state()):
-        servo.set_servo_position(0)
+    servo.set_servo_position(0)
     g.LCD.lcd_clear()
     g.LCD.lcd_display_string("Locking Door", 1)
     led.set_output(1, 0)
@@ -74,7 +73,7 @@ def stillthere_func():
             buzzer.beep(0.5, 0.05, 1)
             led.set_output(1, 1)
             time.sleep(0.05)
-            led.set_output(1, 1)
+            led.set_output(1, 0)
             time.sleep(0.05)
 
 
