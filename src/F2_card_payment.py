@@ -1,67 +1,55 @@
-import time 
+import time
 from threading import Thread
-import queue 
+import queue
 from hal import hal_keypad as keypad
 from hal import hal_lcd as LCD
-from hal import hal_rfid_reader as rfid_reader 
+from hal import hal_rfid_reader as rfid_reader
+import variables as g
 
-
-shared_keypad_queue = queue.Queue()
-global last_key_time
-last_key_time=time.time()
-
-drink_database = {
-    1: {"name" : "Coke", "price" : "1.50", "stock" : 4},
-    6: {"name" : "Sprite", "price" : "1.50", "stock" : 3},
-    13: {"name" : "Lemon Tea", "price" : "1.70", "stock" : 1}
-}
-
-global drink
 
 def main():
-    global LCD, drink, last_key_time
+    # start threads
+    Thread(target=rfid_input).start()  # start RFID checking
 
-    # initialize hardware
-    LCD = LCD.lcd()
-
-    #start threads
-    Thread(target=rfid_input, daemon=True).start()  #start RFID checking
 
 def homescreen():
-    LCD.lcd_clear()
-    LCD.lcd_display_string("Welcome, please", 1)
-    LCD.lcd_display_string("select a drink", 2)
-    
-def tap_card_lcd_display(): 
-    LCD.lcd_clear() 
-    LCD.lcd_display_string(f"{drink['name']} ${drink['price']}", 1)
-    LCD.lcd_display_string("Please tap card", 2)
+    g.LCD.lcd_clear()
+    g.LCD.lcd_display_string("Welcome, please", 1)
+    g.LCD.lcd_display_string("select a drink", 2)
+
+
+def tap_card_lcd_display():
+    g.LCD.lcd_clear()
+    g.LCD.lcd_display_string(
+        f"{g.drink_database[1]['name']} ${g.drink_database[1]['price']}", 1)
+    g.LCD.lcd_display_string("Please tap card", 2)
 
 
 def rfid_input():
     global last_key_time
 
-    while True: 
-        card_data = rfid_reader.read_rfid_card() 
+    while True:
+        card_data = rfid_reader.read_rfid_card()
 
-        if card_data: #check if card was tapped
-            last_key_time = time.time() #update time to when card is tapped
+        if card_data:  # check if card was tapped
+            g.last_key_time = time.time()  # update time to when card is tapped
 
-            accepted_card_data = ["1098490313"] #placeholder for id 
+            accepted_card_data = ["1098490313"]  # placeholder for id
 
-            if card_data in accepted_card_data :  #accepted card
-                LCD.lcd_clear()
-                LCD.lcd_display_string("Payment Success", 1)
+            if card_data in accepted_card_data:  # accepted card
+                g.LCD.lcd_clear()
+                g.LCD.lcd_display_string("Payment Success", 1)
                 time.sleep(5)
             else:
-                LCD.lcd_clear() #declined card
-                LCD.lcd_display_string("Card declined,", 1)
-                LCD.lcd_display_string("please try again", 2)
+                g.LCD.lcd_clear()  # declined card
+                g.LCD.lcd_display_string("Card declined,", 1)
+                g.LCD.lcd_display_string("please try again", 2)
                 time.sleep(5)
                 tap_card_lcd_display()
         time.sleep(5)
-            
+
         return False
+
 
 if __name__ == "__main__":
     main()
