@@ -24,7 +24,7 @@ def tempGet(): #constantly gets temp through thread in main
         time.sleep(5) #prevent lag?
 
 def ledBlink():
-    while g.purchaseCheck == 0:
+    while g.waiting_for_payment == 0:
         if g.temp >= 20:
             led.set_output(24,10)
             time.sleep(0.2)
@@ -59,14 +59,14 @@ def temp_Monitor():
         elif g.temp<20:
             g.check20=0
 
-        if (g.purchaseCheck == 0 and not out_of_order) and g.temp>=20:
+        if (g.waiting_for_payment == 0 and not out_of_order) and g.temp>=20:
                 g.LCD.lcd_clear()
                 g.LCD.lcd_display_string("Machine out", 1)
                 g.LCD.lcd_display_string("of order", 2)
                 out_of_order = True
                 g.waiting_for_payment = True
 
-        elif g.purchaseCheck == 1:
+        elif g.waiting_for_payment == 1:
             out_of_order = False
 
 
