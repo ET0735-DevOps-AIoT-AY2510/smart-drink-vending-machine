@@ -9,8 +9,6 @@ from email.message import EmailMessage
 from email.utils import make_msgid
 from pathlib import Path
 import variables as g
-sender_email = 'devopsgroup2project@gmail.com'
-sender_password = 'imks ngdl jfte ksey'
 
 
 def main():
@@ -59,7 +57,7 @@ def camerafeature():
 def send_email_with_image(receiver_email, subject, body_text, image_path):
     msg = EmailMessage()
     msg['Subject'] = subject
-    msg['From'] = sender_email
+    msg['From'] = g.sender_email
     msg['To'] = receiver_email
 
     # Create a unique Content-ID for the image
@@ -86,7 +84,7 @@ def send_email_with_image(receiver_email, subject, body_text, image_path):
     # Send email
     try:
         with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
-            smtp.login(sender_email, sender_password)
+            smtp.login(g.sender_email, g.sender_password)
             smtp.send_message(msg)
         print("Email sent with image.")
     except Exception as e:
