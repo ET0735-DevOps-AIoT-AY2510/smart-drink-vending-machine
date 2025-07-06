@@ -29,6 +29,7 @@ def main():
     inactivity_thread=Thread(target=f1.inactivity_check, daemon=True)
     inactivity_thread.start()
 
+    f1.homescreen()
     keypad_press_lcd_display()
 
     
