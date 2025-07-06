@@ -79,11 +79,11 @@ def keypad_press_lcd_display():
             selection=int("".join(g.storeSelection)) #turn storeSelection array into int variable
 
             if selection in g.drink_database: #drink number exists
-                g.drink = g.drink_database[selection] 
+                drink = g.drink_database[selection] 
 
-                if g.drink["stock"]>0: #drink has stock
+                if drink["stock"]>0: #drink has stock
                     g.LCD.lcd_clear()
-                    g.LCD.lcd_display_string(g.drink["name"]+" "+g.drink["price"],1)
+                    g.LCD.lcd_display_string(drink["name"]+" "+drink["price"],1)
                     g.LCD.lcd_display_string("1=Card 2=QR Code",2)
                     g.waiting_for_payment = True
 
