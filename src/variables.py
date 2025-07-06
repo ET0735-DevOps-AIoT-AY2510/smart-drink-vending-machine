@@ -2,6 +2,14 @@ from hal import hal_lcd as LCD
 import queue
 import time
 
+drink_database = {
+    1: {"name" : "Coke", "price" : "1.50", "stock" : 4},
+    6: {"name" : "Sprite", "price" : "1.50", "stock" : 3},
+    13: {"name" : "Lemon Tea", "price" : "1.70", "stock" : 1}
+}
+
+storeSelection=[]
+
 temp = 0
 
 check10 = 0
