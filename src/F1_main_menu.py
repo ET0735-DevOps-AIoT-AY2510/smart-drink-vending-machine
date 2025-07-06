@@ -17,8 +17,9 @@ def main():
     keypad_press_lcd_display()
 
 def key_pressed(key): #puts key into queue
-    g.last_key_time=time.time()
-    g.shared_keypad_queue.put(key)
+    if g.out_of_order == False:
+        g.last_key_time=time.time()
+        g.shared_keypad_queue.put(key)
     
 
 def inactivity_check():

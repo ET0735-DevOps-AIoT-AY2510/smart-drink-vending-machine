@@ -32,7 +32,7 @@ def ledBlink():
             time.sleep(0.2)
 
 def temp_Monitor():
-    out_of_order = False
+    g.out_of_order = False
     while True:
         if g.temp >= 20 and g.check20 == 0: #emails staff, blinks led at 2 Hz
             msg = email_content(20)
@@ -59,15 +59,15 @@ def temp_Monitor():
         elif g.temp<20:
             g.check20=0
 
-        if (g.waiting_for_payment == 0 and not out_of_order) and g.temp>=20:
+        if (g.waiting_for_payment == 0 and not g.out_of_order) and g.temp>=20:
                 g.LCD.lcd_clear()
                 g.LCD.lcd_display_string("Machine out", 1)
                 g.LCD.lcd_display_string("of order", 2)
-                out_of_order = True
+                g.out_of_order = True
                 g.waiting_for_payment = True
 
         elif g.waiting_for_payment == 1:
-            out_of_order = False
+            g.out_of_order = False
 
 
 def email_content(whatMsg): #defining email content

@@ -12,10 +12,10 @@ storeSelection=[]
 
 temp = 0
 
+out_of_order = False
+
 check10 = 0
 check20 = 0
-
-purchaseCheck = 0
 
 LCD = LCD.lcd()
 
