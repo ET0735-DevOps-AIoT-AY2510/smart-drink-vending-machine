@@ -1,6 +1,5 @@
 import time
 from threading import Thread
-from hal import hal_lcd as LCD
 from hal import hal_keypad as keypad
 import variables as g
 

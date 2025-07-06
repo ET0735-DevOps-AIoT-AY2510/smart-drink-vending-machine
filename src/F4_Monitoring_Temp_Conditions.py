@@ -1,5 +1,4 @@
 import time
-from hal import hal_lcd as LCD
 from hal import hal_led as led
 from hal import hal_temp_humidity_sensor as temp_humid
 from threading import Thread
