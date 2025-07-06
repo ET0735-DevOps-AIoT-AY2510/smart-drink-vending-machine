@@ -24,12 +24,13 @@ def tempGet(): #constantly gets temp through thread in main
         time.sleep(5) #prevent lag?
 
 def ledBlink():
-    while g.waiting_for_payment == 0:
-        if g.temp >= 20:
-            led.set_output(24,10)
-            time.sleep(0.2)
-            led.set_output(24,0)
-            time.sleep(0.2)
+    while True:
+        while g.waiting_for_payment == 0:
+            if g.temp >= 20:
+                led.set_output(24,10)
+                time.sleep(0.2)
+                led.set_output(24,0)
+                time.sleep(0.2)
 
 def temp_Monitor():
     g.out_of_order = False
