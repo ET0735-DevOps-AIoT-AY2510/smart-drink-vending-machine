@@ -15,7 +15,7 @@ def dispensing_drink(drinkNum):
     dc.set_motor_speed(50)
     time.sleep(2)
     dc.set_motor_speed(0)
-    g.drink[drinkNum]["stock"] -= 1
+    g.drink_database[drinkNum]["stock"] -= 1
 
 if __name__ == "__main__":
     main()
