@@ -8,7 +8,6 @@ import variables as g
 reader = rfid_reader.init()
 
 
-
 def main():
     # start threads
     Thread(target=rfid_input).start()  # start RFID checking
