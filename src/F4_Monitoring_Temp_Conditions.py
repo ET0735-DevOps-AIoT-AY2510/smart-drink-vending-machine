@@ -64,7 +64,6 @@ def temp_Monitor():
                 g.LCD.lcd_display_string("Machine out", 1)
                 g.LCD.lcd_display_string("of order", 2)
                 g.out_of_order = True
-                g.waiting_for_payment = True
 
         elif g.waiting_for_payment == 1:
             g.out_of_order = False
