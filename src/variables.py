@@ -18,6 +18,9 @@ drink_database = {
 storeSelection = []
 
 temp = 0
+moist = False
+
+out_of_order = False
 
 check10 = 0
 check20 = 0
