@@ -63,9 +63,9 @@ def temp_Monitor():
             g.check20=0
 
         if (g.purchaseCheck == 0 and not out_of_order) and g.temp>=20:
-                LCD.lcd_clear()
-                LCD.lcd_display_string("Machine out", 1)
-                LCD.lcd_display_string("of order", 2)
+                g.LCD.lcd_clear()
+                g.LCD.lcd_display_string("Machine out", 1)
+                g.LCD.lcd_display_string("of order", 2)
                 out_of_order = True
                 g.waiting_for_payment = True
 
