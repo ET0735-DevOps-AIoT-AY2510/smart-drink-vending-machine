@@ -8,20 +8,20 @@ import smtplib
 from email.message import EmailMessage
 from email.utils import make_msgid
 from pathlib import Path
-from datetime import datetime
-
+import variables as g
 sender_email = 'devopsgroup2project@gmail.com'
 sender_password = 'imks ngdl jfte ksey'
 
 
 def main():
     ir_sensor.init()
-    servo.init()
     while True:
-        if not admin.BurglarCheck and not ir_sensor.get_ir_sensor_state():
-            security_thread = Thread(target=admin.ledandbuzzer, daemon=True)
+        if not g.BurglarState and not ir_sensor.get_ir_sensor_state():
+            security_thread = Thread(target=admin.stillthere_func, daemon=True)
             security_thread.start()
-            admin.ledandbuzzer_event.set()
+            locking_thread = Thread(target=forcedlock, daemon=True)
+            locking_thread.start()
+            g.stillthere_event.set()
             camerafeature()
             send_email_with_image(
                 receiver_email='terencetngkc2007@gmail.com',
@@ -29,12 +29,18 @@ def main():
                 body_text='Burglar Detected.',
                 image_path='test.jpg'
             )
-
-        while not admin.BurglarCheck and not ir_sensor.get_ir_sensor_state():
-            servo.set_servo_position(0)
-
-        if not admin.BurglarCheck:
+        while not g.BurglarState and not ir_sensor.get_ir_sensor_state():
+            True  # So that it does not keep sending emails
+        if not g.BurglarState and ir_sensor.get_ir_sensor_state():
+            g.stillthere_event.clear()
             admin.led.set_output(1, 0)
+
+
+def forcedlock():
+    servo.init()
+    while True:
+        if g.stillthere_event.is_set():
+            servo.set_servo_position(0)
 
 
 def camerafeature():
