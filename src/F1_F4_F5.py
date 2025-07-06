@@ -1,6 +1,5 @@
 import time
 from threading import Thread
-from hal import hal_lcd as LCD
 from hal import hal_keypad as keypad
 from hal import hal_dc_motor as dc
 from hal import hal_led as led
@@ -10,7 +9,7 @@ import F1_main_menu as f1
 import F4_Monitoring_Temp_Conditions as f4
 import F5_Dispensing_Drink as f5
 
-import variables as g
+import variables as g #contains global variables,drink_database and lcd pre-initialised
 
 
 def main():

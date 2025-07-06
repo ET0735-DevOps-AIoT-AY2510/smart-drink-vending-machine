@@ -1,8 +1,6 @@
 import time
-from hal import hal_lcd as LCD
 from hal import hal_dc_motor as dc
 import variables as g
-import F1_main_menu as f1
 
 
 def main():
