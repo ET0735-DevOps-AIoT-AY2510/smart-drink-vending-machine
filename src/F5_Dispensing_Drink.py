@@ -6,7 +6,7 @@ import variables as g
 def main():
     dc.init()
 
-    dispensing_drink()
+    dispensing_drink(1)
 
 def dispensing_drink(drinkNum):
     g.LCD.lcd_clear()
