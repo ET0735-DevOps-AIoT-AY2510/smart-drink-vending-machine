@@ -1,5 +1,4 @@
-import time
-from F1_main_menu import homescreen
+import time 
 from threading import Thread
 import queue 
 from hal import hal_keypad as keypad
@@ -23,46 +22,21 @@ def main():
     global LCD, drink, last_key_time
 
     # initialize hardware
-    keypad.init(key_input)
     LCD = LCD.lcd()
 
     #start threads
-    Thread(target=key_input, daemon=True).start()
-    Thread(target=check_inactivity, daemon=True).start()
     Thread(target=rfid_input, daemon=True).start()  #start RFID checking
 
-
+def homescreen():
+    LCD.lcd_clear()
+    LCD.lcd_display_string("Welcome, please", 1)
+    LCD.lcd_display_string("select a drink", 2)
+    
 def tap_card_lcd_display(): 
     LCD.lcd_clear() 
     LCD.lcd_display_string(f"{drink['name']} ${drink['price']}", 1)
-    LCD.lcd_display_string("Tap card on reader", 2)
+    LCD.lcd_display_string("Please tap card", 2)
 
-def check_inactivity(): 
-    global last_key_time
-    while True:
-        if time.time() - last_key_time > 30: 
-            homescreen() 
-            last_key_time = time.time() #reset timer to avoid looping
-        time.sleep(5)
-
-def key_input(): 
-    while True:
-        global last_key_time
-        if not shared_keypad_queue.empty(): #check if key is pressed 
-            key = shared_keypad_queue.get() #get the key 
-            last_key_time = time.time() 
-
-            if key == "*": #for when they want to go back to payment options
-                LCD.lcd_clear()
-                LCD.lcd_display_string("Returning to", 1)
-                LCD.lcd_display_string("payment options", 2)
-                time.sleep(5) 
-                LCD.lcd_clear()
-                LCD.lcd_display_string(f"{drink['name']} ${drink['price']}", 1) 
-                LCD.lcd_display_string("1=Card 2=QR Code", 2)
-                return True 
-            
-        return False 
 
 def rfid_input():
     global last_key_time
@@ -78,13 +52,12 @@ def rfid_input():
             if card_data in accepted_card_data :  #accepted card
                 LCD.lcd_clear()
                 LCD.lcd_display_string("Payment Success", 1)
-                time.sleep(2)
-                tap_card_lcd_display()
+                time.sleep(5)
             else:
                 LCD.lcd_clear() #declined card
                 LCD.lcd_display_string("Card declined,", 1)
                 LCD.lcd_display_string("please try again", 2)
-                time.sleep(3)
+                time.sleep(5)
                 tap_card_lcd_display()
         time.sleep(5)
             
