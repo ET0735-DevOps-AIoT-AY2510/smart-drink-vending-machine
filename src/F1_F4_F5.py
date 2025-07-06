@@ -16,6 +16,7 @@ def main():
     dc.init()
     led.init()
     temp_humid.init()
+    keypad.init(f1.key_pressed)
 
     temp_check_thread=Thread(target=f4.tempGet, daemon = True)
     temp_check_thread.start()
