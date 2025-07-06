@@ -23,7 +23,7 @@ def tap_card_lcd_display():
     g.LCD.lcd_clear()
     g.LCD.lcd_display_string(
         f"{g.drink_database[1]['name']} ${g.drink_database[1]['price']}", 1)
-    g.LCD.lcd_display_string("Please tap card", 2)
+    g.LCD.lcd_display_string("please tap card", 2)
 
 
 def rfid_input():
