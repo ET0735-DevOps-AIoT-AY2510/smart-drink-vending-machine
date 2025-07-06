@@ -110,4 +110,6 @@ def keypad_press_lcd_display():
                 g.LCD.lcd_clear()
                 g.storeSelection.append(keyvalue) #stores most recent key press into array
                 g.LCD.lcd_display_string("".join(g.storeSelection),1) #displays key on lcd (cummulative)
-            
+
+if __name__ == "__main__":
+    main()
