@@ -1,4 +1,6 @@
 from hal import hal_lcd as LCD
+from hal import hal_buzzer as buzzer
+from hal import hal_led as led
 from threading import Thread, Event
 import time
 import queue
@@ -42,10 +44,31 @@ waiting_for_payment = False
 
 sender_email = 'devopsgroup2project@gmail.com'
 sender_password = 'imks ngdl jfte ksey'
-msg = EmailMessage()
+
+
+def stillthere_func():
+    buzzer.init()
+    led.init()
+    while True:  # Always running, react to event state inside
+        if stillthere_event.is_set():  # Correct: run while event is set
+            buzzer.beep(0.5, 0.05, 0)
+            led.set_output(1, 1)
+            time.sleep(0.05)
+            led.set_output(1, 0)
+            time.sleep(0.05)
+
+
+def key_pressed(key):  # puts key into queue
+    global last_key_time, stillthere
+    if out_of_order == False:
+        last_key_time = time.time()
+        shared_keypad_queue.put(key)
+    elif (time.time() - elapsed >= 5) and BurglarState:
+        stillthere = True
 
 
 def send_email(receiver_email, subject, body_text, image_path=None):
+    msg = EmailMessage()
     msg['Subject'] = subject
     msg['From'] = sender_email
     msg['To'] = receiver_email

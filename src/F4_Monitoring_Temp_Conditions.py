@@ -21,8 +21,7 @@ def main():
 
 def tempGet():  # constantly gets temp through thread in main
     while True:
-        g.temp, _ = temp_humid.read_temp_humidity()
-        time.sleep(5)  # prevent lag?
+        g.temp = 5
 
 
 def ledBlink():

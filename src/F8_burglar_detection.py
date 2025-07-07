@@ -15,8 +15,8 @@ def main():
     ir_sensor.init()
     while True:
         if not g.BurglarState and not ir_sensor.get_ir_sensor_state():
-            security_thread = Thread(target=admin.stillthere_func, daemon=True)
-            security_thread.start()
+            '''security_thread = Thread(target=g.stillthere_func, daemon=True)
+            security_thread.start()'''
             locking_thread = Thread(target=forcedlock, daemon=True)
             locking_thread.start()
             g.stillthere_event.set()

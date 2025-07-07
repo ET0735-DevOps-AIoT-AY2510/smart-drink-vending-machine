@@ -19,11 +19,11 @@ def main():
     servo.init()
 
     ir_sensor.init()
-    keypad.init(key_pressed)
+    '''keypad.init(key_pressed)
     keypad_thread = Thread(target=keypad.get_key, daemon=True)
     keypad_thread.start()
-    security_thread = Thread(target=stillthere_func, daemon=True)
-    security_thread.start()
+    security_thread = Thread(target=g.stillthere_func, daemon=True)
+    security_thread.start()'''
     while time.time() - g.elapsed <= 10 and not ir_sensor.get_ir_sensor_state():
         if (time.time() - g.elapsed >= 5):
             security_check()
@@ -40,9 +40,9 @@ def main():
     g.check20 = 0
 
 
-def key_pressed(key):
+'''def key_pressed(key):
     if (time.time() - g.elapsed >= 5):
-        g.stillthere = True
+        g.stillthere = True'''
 
 
 def unlock_door():
@@ -70,18 +70,6 @@ def timeout():
     g.LCD.lcd_display_string("Locking Door", 1)
     led.set_output(1, 0)
     time.sleep(3)
-
-
-def stillthere_func():
-    buzzer.init()
-    led.init()
-    while True:  # Always running, react to event state inside
-        if g.stillthere_event.is_set():  # Correct: run while event is set
-            buzzer.beep(0.5, 0.05, 1)
-            led.set_output(1, 1)
-            time.sleep(0.05)
-            led.set_output(1, 0)
-            time.sleep(0.05)
 
 
 if __name__ == '__main__':

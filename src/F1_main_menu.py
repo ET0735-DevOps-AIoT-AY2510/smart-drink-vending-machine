@@ -6,7 +6,7 @@ import F6_admin_access as f6
 
 
 def main():
-    keypad.init(key_pressed)
+    keypad.init(g.key_pressed)
 
     keypad_thread = Thread(target=keypad.get_key,
                            daemon=True)  # constantly gets key
@@ -18,10 +18,12 @@ def main():
     keypad_press_lcd_display()
 
 
-def key_pressed(key):  # puts key into queue
+'''def key_pressed(key):  # puts key into queue
     if g.out_of_order == False:
         g.last_key_time = time.time()
         g.shared_keypad_queue.put(key)
+    elif (time.time() - g.elapsed >= 5):
+        g.stillthere = True'''
 
 
 def inactivity_check():
