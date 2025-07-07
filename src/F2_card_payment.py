@@ -31,14 +31,14 @@ def rfid_input():
 
     while True:
         card_data = reader.read_id_no_block()
-        card_data = str(id) 
+        card_data_string = str(card_data) 
 
-        if card_data:  # check if card was tapped
+        if card_data_string:  # check if card was tapped
             g.last_key_time = time.time()  # update time to when card is tapped
 
             accepted_card_data = ["1098490313"]  # placeholder for id
 
-            if card_data in accepted_card_data:  # accepted card
+            if card_data_string in accepted_card_data:  # accepted card
                 g.LCD.lcd_clear()
                 g.LCD.lcd_display_string("Payment Success", 1)
                 time.sleep(5)
