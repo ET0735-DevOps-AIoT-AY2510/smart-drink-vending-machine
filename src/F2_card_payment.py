@@ -4,6 +4,7 @@ import queue
 from hal import hal_keypad as keypad
 from hal import hal_lcd as LCD
 from hal import hal_rfid_reader as rfid_reader
+from hal import hal_buzzer as buzzer
 import variables as g
 reader = rfid_reader.init()
 
@@ -40,10 +41,12 @@ def rfid_input():
 
             if card_data_string in accepted_card_data:  # accepted card
                 g.LCD.lcd_clear()
+                buzzer.beep(0.05, 0.5, 1)
                 g.LCD.lcd_display_string("Payment Success", 1)
                 time.sleep(5)
             else:
                 g.LCD.lcd_clear()  # declined card
+                buzzer.beep(0.5, 1, 1)
                 g.LCD.lcd_display_string("Card declined,", 1)
                 g.LCD.lcd_display_string("please try again", 2)
                 time.sleep(5)
