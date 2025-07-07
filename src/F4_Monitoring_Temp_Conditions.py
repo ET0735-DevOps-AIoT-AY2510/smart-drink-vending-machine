@@ -8,9 +8,6 @@ import variables as g
 
 
 def main():
-    led.init()
-    temp_humid.init()
-
     temp_check_thread = Thread(target=tempGet, daemon=True)
     temp_check_thread.start()
     temp_Monitor_thread = Thread(target=temp_Monitor, daemon=True)

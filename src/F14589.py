@@ -7,44 +7,37 @@ from hal import hal_temp_humidity_sensor as temp_humid
 from hal import hal_moisture_sensor as moistSens
 from hal import hal_ir_sensor as ir_sensor
 from hal import hal_servo as servo
-
+from hal import hal_buzzer as buzzer
 import F1_main_menu as f1
 import F4_Monitoring_Temp_Conditions as f4
 import F5_Dispensing_Drink as f5
 import F6_admin_access as f6
 import F8_burglar_detection as f8
 import F9_Monitoring_Liquid_Leakage as f9
-
+from picamera2 import Picamera2, Preview
 import variables as g  # contains global variables,drink_database and lcd pre-initialised
 
 
 def main():
     dc.init()
+    buzzer.init()
     led.init()
     temp_humid.init()
     moistSens.init()
+    ir_sensor.init()
+    servo.init()
     keypad.init(g.key_pressed)
-    security_thread = Thread(target=g.stillthere_func, daemon=True)
-    security_thread.start()
-    temp_check_thread = Thread(target=f4.tempGet, daemon=True)
-    temp_check_thread.start()
-    temp_Monitor_thread = Thread(target=f4.temp_Monitor, daemon=True)
-    temp_Monitor_thread.start()
-    ledBlink_thread = Thread(target=f4.ledBlink, daemon=True)
-    ledBlink_thread.start()
     keypad_thread = Thread(target=keypad.get_key,
                            daemon=True)  # constantly gets key
     keypad_thread.start()
+    security_thread = Thread(target=g.stillthere_func, daemon=True)
+    security_thread.start()
     inactivity_thread = Thread(target=f1.inactivity_check, daemon=True)
     inactivity_thread.start()
-    monitor_leak_thread = Thread(target=f9.monitor_leak, daemon=True)
-    monitor_leak_thread.start()
-    ledBlinkLeak_thread = Thread(target=f9.ledBlinkLeak, daemon=True)
-    ledBlinkLeak_thread.start()
-    humid_check_thread = Thread(target=f9.getMoist, daemon=True)
-    humid_check_thread.start()
+    f4.main()
     f8_main_thread = Thread(target=f8.main)
     f8_main_thread.start()
+    f9.main()
 
     f1.homescreen()
     keypad_press_lcd_display()

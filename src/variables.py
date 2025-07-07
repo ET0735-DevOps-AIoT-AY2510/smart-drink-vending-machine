@@ -47,8 +47,6 @@ sender_password = 'imks ngdl jfte ksey'
 
 
 def stillthere_func():
-    buzzer.init()
-    led.init()
     while True:  # Always running, react to event state inside
         if stillthere_event.is_set():  # Correct: run while event is set
             buzzer.beep(0.5, 0.05, 0)

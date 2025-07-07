@@ -8,14 +8,11 @@ import variables as g
 
 
 def main():
-    led.init()
-    moistSens.init()
-
     monitor_leak_thread = Thread(target=monitor_leak, daemon=True)
     monitor_leak_thread.start()
     ledBlinkLeak_thread = Thread(target=ledBlinkLeak, daemon=True)
     ledBlinkLeak_thread.start()
-    humid_check_thread = Thread(target=getMoist)
+    humid_check_thread = Thread(target=getMoist, daemon=True)
     humid_check_thread.start()
 
 

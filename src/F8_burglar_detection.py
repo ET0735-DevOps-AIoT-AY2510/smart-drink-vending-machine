@@ -25,13 +25,13 @@ def main():
                 receiver_email='terencetngkc2007@gmail.com',
                 subject='Image of Burglar',
                 body_text='Burglar Detected.',
-                image_path='test.jpg'
+                image_path='idk.jpg'
             )
         while not g.BurglarState and not ir_sensor.get_ir_sensor_state():
-            True  # So that it does not keep sending emails
+            idk = 5  # So that it does not keep sending emails
         if not g.BurglarState and ir_sensor.get_ir_sensor_state():
             g.stillthere_event.clear()
-            admin.led.set_output(1, 0)
+            g.led.set_output(1, 0)
 
 
 def forcedlock():
@@ -49,7 +49,7 @@ def camerafeature():
     picam2.start_preview(Preview.QTGL)
     picam2.start()
     time.sleep(2)
-    picam2.capture_file("test.jpg")
+    picam2.capture_file("idk.jpg")
     picam2.stop_preview()
     picam2.close()
 
