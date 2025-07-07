@@ -21,7 +21,7 @@ def main():
             locking_thread.start()
             g.stillthere_event.set()
             camerafeature()
-            send_email_with_image(
+            g.send_email(
                 receiver_email='terencetngkc2007@gmail.com',
                 subject='Image of Burglar',
                 body_text='Burglar Detected.',
@@ -52,43 +52,6 @@ def camerafeature():
     picam2.capture_file("test.jpg")
     picam2.stop_preview()
     picam2.close()
-
-
-def send_email_with_image(receiver_email, subject, body_text, image_path):
-    msg = EmailMessage()
-    msg['Subject'] = subject
-    msg['From'] = g.sender_email
-    msg['To'] = receiver_email
-
-    # Create a unique Content-ID for the image
-    image_cid = make_msgid()[1:-1]  # remove angle brackets
-
-    # Email body with HTML that refers to the image Content-ID
-    msg.set_content(body_text)
-    msg.add_alternative(f"""\
-    <html>
-        <body>
-            <p>{body_text}</p>
-            <img src="cid:{image_cid}" alt="Image">
-        </body>
-    </html>
-    """, subtype='html')
-
-    # Read and attach the image
-    with open(image_path, 'rb') as img:
-        img_data = img.read()
-        img_type = Path(image_path).suffix.replace('.', '')
-        msg.get_payload()[1].add_related(
-            img_data, maintype='image', subtype=img_type, cid=f"<{image_cid}>")
-
-    # Send email
-    try:
-        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
-            smtp.login(g.sender_email, g.sender_password)
-            smtp.send_message(msg)
-        print("Email sent with image.")
-    except Exception as e:
-        print(f"Failed to send email: {e}")
 
 
 if __name__ == '__main__':
