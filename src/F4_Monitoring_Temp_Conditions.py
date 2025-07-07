@@ -27,16 +27,14 @@ def tempGet():  # constantly gets temp through thread in main
 
 def ledBlink():
     while True:
-        while g.waiting_for_payment == 0:
-            if g.temp >= 20:
-                led.set_output(24, 10)
-                time.sleep(0.2)
-                led.set_output(24, 0)
-                time.sleep(0.2)
+        if g.temp >= 20 and g.waiting_for_payment == 0:
+            led.set_output(24, 10)
+            time.sleep(0.2)
+            led.set_output(24, 0)
+            time.sleep(0.2)
 
 
 def temp_Monitor():
-    g.out_of_order = False
     while True:
         if g.temp >= 20 and g.check20 == 0:  # emails staff, blinks led at 2 Hz
             g.send_email(
@@ -68,9 +66,6 @@ def temp_Monitor():
             g.LCD.lcd_display_string("Machine out", 1)
             g.LCD.lcd_display_string("of order", 2)
             g.out_of_order = True
-
-        elif g.waiting_for_payment == 1:
-            g.out_of_order = False
 
 
 if __name__ == "__main__":

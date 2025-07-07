@@ -31,7 +31,7 @@ check10 = 0
 check20 = 0
 
 purchaseCheck = 0
-
+emailCheckLeak = 0
 
 shared_keypad_queue = queue.Queue()
 last_key_time = time.time()

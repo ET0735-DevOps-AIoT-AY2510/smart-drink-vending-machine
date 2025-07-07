@@ -10,10 +10,12 @@ import variables as g
 
 
 def main():
+    g.out_of_order = True
     g.BurglarState = True
     g.stillthere = True
     g.elapsed = time.time()
     g.security_prompt = True
+    g.waiting_for_payment = True  # So that the other LED functions are disabled
     servo.init()
 
     ir_sensor.init()
@@ -31,6 +33,11 @@ def main():
             g.security_prompt = False
     timeout()
     g.BurglarState = False
+    g.out_of_order = False
+    g.waiting_for_payment = False
+    g.emailCheckLeak = 0
+    g.check10 = 0
+    g.check20 = 0
 
 
 def key_pressed(key):
