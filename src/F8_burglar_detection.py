@@ -12,7 +12,6 @@ import variables as g
 
 
 def main():
-    ir_sensor.init()
     while True:
         if not g.BurglarState and not ir_sensor.get_ir_sensor_state():
             '''security_thread = Thread(target=g.stillthere_func, daemon=True)

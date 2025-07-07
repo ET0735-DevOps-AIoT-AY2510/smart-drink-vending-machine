@@ -87,6 +87,7 @@ def keypad_press_lcd_display():
             selection = int("".join(g.storeSelection))
             if selection == 12345:
                 f6.main()
+                g.shared_keypad_queue.put("*")
             elif selection in g.drink_database:  # drink number exists
                 drink = g.drink_database[selection]
 
@@ -96,6 +97,7 @@ def keypad_press_lcd_display():
                         drink["name"]+" "+drink["price"], 1)
                     g.LCD.lcd_display_string("1=Card 2=QR Code", 2)
                     g.waiting_for_payment = True
+                    g.storeSelection = []
 
                 else:  # drink no stock
                     g.LCD.lcd_display_string("Drink out", 1)
@@ -110,9 +112,6 @@ def keypad_press_lcd_display():
                 time.sleep(5)
                 g.LCD.lcd_clear()
                 g.storeSelection = []
-
-            # clears array cuz im lazy to check if i forgot to clear when necessary
-            g.storeSelection = []
 
         else:
             if len(g.storeSelection) < 6:
