@@ -1,5 +1,5 @@
 from hal import hal_lcd as LCD
-from threading import Thread, Event
+from threading import Event
 import time
 import queue
 stillthere = True
