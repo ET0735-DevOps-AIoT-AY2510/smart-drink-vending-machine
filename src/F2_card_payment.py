@@ -10,6 +10,7 @@ reader = rfid_reader.init()
 
 
 def main():
+    buzzer.init()
     # start threads
     Thread(target=rfid_input).start()  # start RFID checking
 
@@ -28,16 +29,15 @@ def tap_card_lcd_display():
 
 
 def rfid_input():
-    global last_key_time
-
     while True:
         card_data = reader.read_id_no_block()
-        card_data_string = str(card_data) 
+        card_data_string = str(card_data)
+        print(card_data_string)
 
         if card_data_string:  # check if card was tapped
             g.last_key_time = time.time()  # update time to when card is tapped
 
-            accepted_card_data = ["1098490313"]  # placeholder for id
+            accepted_card_data = ["437194800967"]  # placeholder for id
 
             if card_data_string in accepted_card_data:  # accepted card
                 g.LCD.lcd_clear()
