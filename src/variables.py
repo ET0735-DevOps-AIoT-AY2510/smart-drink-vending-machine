@@ -37,8 +37,6 @@ emailCheckLeak = 0
 
 shared_keypad_queue = queue.Queue()
 lcd_queue = queue.Queue()
-text = "hi"
-textCheck = "bye"
 
 last_key_time = time.time()
 

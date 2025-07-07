@@ -16,6 +16,7 @@ def main():
     g.elapsed = time.time()
     g.security_prompt = True
     g.waiting_for_payment = True  # So that the other LED functions are disabled
+    time.sleep(10)
     '''keypad.init(key_pressed)
     keypad_thread = Thread(target=keypad.get_key, daemon=True)
     keypad_thread.start()
