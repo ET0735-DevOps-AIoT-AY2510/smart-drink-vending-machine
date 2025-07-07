@@ -3,7 +3,6 @@ import time
 from hal import hal_usonic as usonic
 
 
-
 def init():
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
@@ -15,12 +14,13 @@ def init():
     GPIO.setup(27, GPIO.IN)
 
 
-#define a function called distance below:
+# define a function called distance below:
 def get_distance():
     distance = usonic.get_distance()
     return distance
 
-#assume diameter of a drink can is 6cm and length of vending machine is 80cm and max drinks inside one row at once is 10
+# assume diameter of a drink can is 6cm and length of vending machine is 80cm and max drinks inside one row at once is 10
+
 
 def remaining_stock():
     # distance = get_distance()  # Get current ultrasonic reading
@@ -32,28 +32,28 @@ def remaining_stock():
         stock = 0
     else:                # Intermediate distance
         stock = int(10 * (1 - (distance - 6)/54))
-    
+
     return stock
 
-def alert_staff():
-    stock = remaining_stock() # Get stock value
+
+def alert_staff(stock):
+    # Get stock value
 
     if stock < 5:
-      # Email staff
-      print("email")
+        # Email staff
+        print("email")
 
 
 def main():
-    init()  
-    while True:  
+    init()
+    while True:
         distance = get_distance()
         stock = remaining_stock()
         print(f"Distance: {distance:.2f} cm, Stock remaining: {stock}")
-        
-        alert_staff(stock)
-        
-        time.sleep(1) 
 
+        alert_staff(stock)
+
+        time.sleep(1)
 
 
 if __name__ == "__main__":
