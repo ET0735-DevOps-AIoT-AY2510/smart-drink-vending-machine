@@ -13,21 +13,25 @@ def main():
     g.out_of_order = True
     g.BurglarState = True
     g.stillthere = True
-    g.elapsed = time.time()
     g.security_prompt = True
     g.waiting_for_payment = True  # So that the other LED functions are disabled
     time.sleep(10)
     '''keypad.init(key_pressed)
     keypad_thread = Thread(target=keypad.get_key, daemon=True)
-    keypad_thread.start()
-    security_thread = Thread(target=g.stillthere_func, daemon=True)
-    security_thread.start()'''
+    keypad_thread.start()'''
+    security_thread = Thread(target=g.stillthere_func)
+    security_thread.start()
+    g.elapsed = time.time()
     while time.time() - g.elapsed <= 10 and not ir_sensor.get_ir_sensor_state():
         if (time.time() - g.elapsed >= 5):
+            if not g.security_prompt:
+                g.stillthere_event.set()
+                security_thread = Thread(target=g.stillthere_func)
+                security_thread.start()
             security_check()
             g.security_prompt = True
         elif g.security_prompt and g.stillthere:
-            unlock_door()
+            unlock_door(security_thread)
             g.security_prompt = False
     timeout()
     g.BurglarState = False
@@ -43,20 +47,21 @@ def main():
         g.stillthere = True'''
 
 
-def unlock_door():
+def unlock_door(security_thread):
     g.stillthere_event.clear()
     servo.set_servo_position(90)
     g.lcd_queue.put("clear")
     g.lcd_queue.put(("Door Unlocked", 1))
     g.stillthere = False
+    if security_thread.is_alive():
+        security_thread.join()
 
 
 def security_check():
     if g.stillthere:
         g.elapsed = time.time()
     if not g.security_prompt:
-        g.stillthere_event.set()
-        g.lcd_queue.put()
+        g.lcd_queue.put("clear")
         g.lcd_queue.put(("Still there?", 1))
         g.lcd_queue.put(("Click anything", 2))
 

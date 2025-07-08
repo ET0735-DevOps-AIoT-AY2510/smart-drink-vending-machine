@@ -7,10 +7,6 @@ import variables as g
 
 
 def main():
-    monitor_leak_thread = Thread(target=monitor_leak, daemon=True)
-    monitor_leak_thread.start()
-    ledBlinkLeak_thread = Thread(target=ledBlinkLeak, daemon=True)
-    ledBlinkLeak_thread.start()
     humid_check_thread = Thread(target=getMoist, daemon=True)
     humid_check_thread.start()
 
@@ -22,8 +18,8 @@ def getMoist():  # constantly detect moisture
 
 
 def ledBlinkLeak():  # blink if moisture is detected and user isnt interacting
-    while True:
-        if g.moist and g.waiting_for_payment == 0:
+    if g.moist and g.waiting_for_payment == 0:
+        while g.out_of_order:
             led.set_output(24, 10)
             time.sleep(0.2)
             led.set_output(24, 0)
@@ -31,20 +27,19 @@ def ledBlinkLeak():  # blink if moisture is detected and user isnt interacting
 
 
 def monitor_leak():  # send email if moisture detected, display out of order
-    while True:
-        if g.moist and g.emailCheckLeak == 0:
-            g.send_email(
-                receiver_email='nathanchew2007@gmail.com',
-                subject='Liquid Leakage',
-                body_text='Liquid Leakage detected in Vending Machine'
-            )
-            g.emailCheckLeak == 1
+    if g.moist and g.emailCheckLeak == 0:
+        g.send_email(
+            receiver_email='nathanchew2007@gmail.com',
+            subject='Liquid Leakage',
+            body_text='Liquid Leakage detected in Vending Machine'
+        )
+        g.emailCheckLeak == 1
 
-        if (g.waiting_for_payment == 0 and not g.out_of_order) and g.moist == True:
-            g.lcd_queue.put("clear")
-            g.lcd_queue.put(("Machine out", 1))
-            g.lcd_queue.put(("of order", 2))
-            g.out_of_order = True
+    if (g.waiting_for_payment == 0 and not g.out_of_order) and g.moist == True:
+        g.lcd_queue.put("clear")
+        g.lcd_queue.put(("Machine out", 1))
+        g.lcd_queue.put(("of order", 2))
+        g.out_of_order = True
 
 
 if __name__ == "__main__":

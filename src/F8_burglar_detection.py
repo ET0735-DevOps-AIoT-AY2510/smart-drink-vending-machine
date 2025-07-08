@@ -16,9 +16,11 @@ def main():
         if not g.BurglarState and not ir_sensor.get_ir_sensor_state():
             '''security_thread = Thread(target=g.stillthere_func, daemon=True)
             security_thread.start()'''
-            locking_thread = Thread(target=forcedlock, daemon=True)
-            locking_thread.start()
+            '''locking_thread = Thread(target=forcedlock)
+            locking_thread.start()'''
             g.stillthere_event.set()
+            security_thread = Thread(target=g.stillthere_func)
+            security_thread.start()
             camerafeature()
             g.send_email(
                 receiver_email='terencetngkc2007@gmail.com',
@@ -27,17 +29,22 @@ def main():
                 image_path='idk.jpg'
             )
         while not g.BurglarState and not ir_sensor.get_ir_sensor_state():
-            idk = 5  # So that it does not keep sending emails
-        if not g.BurglarState and ir_sensor.get_ir_sensor_state():
-            g.stillthere_event.clear()
-            g.led.set_output(1, 0)
-
-
-def forcedlock():
-    servo.init()
-    while True:
-        if g.stillthere_event.is_set():
+            # So that it does not keep sending emails
             servo.set_servo_position(0)
+        try:
+            if not g.BurglarState and ir_sensor.get_ir_sensor_state() and security_thread.is_alive():
+                g.stillthere_event.clear()
+                security_thread.join()
+        except NameError:
+            # security_thread does not exist yet
+            pass
+
+
+'''def forcedlock():
+    servo.init()
+    
+    while g.stillthere_event.is_set():
+        servo.set_servo_position(0)'''
 
 
 def camerafeature():

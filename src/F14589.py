@@ -16,6 +16,7 @@ import F8_burglar_detection as f8
 import F9_Monitoring_Liquid_Leakage as f9
 from picamera2 import Picamera2, Preview
 import variables as g  # contains global variables,drink_database and lcd pre-initialised
+import LCD_Usage as display
 
 
 def main():
@@ -27,19 +28,36 @@ def main():
     ir_sensor.init()
     servo.init()
     keypad.init(g.key_pressed)
-    keypad_thread = Thread(target = keypad.get_key, daemon = True)  # constantly gets key
+
+    lcd_print_thread = Thread(target=display.lcd_print, daemon=True)
+    lcd_print_thread.start()
+    keypad_thread = Thread(target=keypad.get_key,
+                           daemon=True)  # constantly gets key
     keypad_thread.start()
-    security_thread = Thread(target = g.stillthere_func, daemon = True)
-    security_thread.start()
-    inactivity_thread = Thread(target = f1.inactivity_check, daemon = True)
+    inactivity_thread = Thread(target=f1.inactivity_check, daemon=True)
     inactivity_thread.start()
     f4.main()
-    f8_main_thread = Thread(target = f8.main)
+    f8_main_thread = Thread(target=f8.main)
     f8_main_thread.start()
     f9.main()
-
+    main_menu_thread = Thread(target=keypad_press_lcd_display)
+    main_menu_thread.start()
     f1.homescreen()
-    keypad_press_lcd_display()
+    f4threads = False
+    f9threads = False
+    while True:
+        if not f4threads and g.temp >= 10:
+            f4.temp_Monitor()
+            ledBlink_thread = Thread(target=f4.ledBlink)
+            ledBlink_thread.start()
+            f4threads = True
+        elif not f9threads and g.moist:
+            f9.monitor_leak()
+            ledBlinkLeak_thread = Thread(target=f4.ledBlinkLeak, daemon=True)
+            ledBlinkLeak_thread.start()
+            f9threads = True
+        else:
+            time.sleep(0.1)
 
 
 def keypad_press_lcd_display():

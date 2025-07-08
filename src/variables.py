@@ -49,13 +49,12 @@ sender_password = 'imks ngdl jfte ksey'
 
 
 def stillthere_func():
-    while True:  # Always running, react to event state inside
-        if stillthere_event.is_set():  # Correct: run while event is set
-            buzzer.beep(0.5, 0.05, 0)
-            led.set_output(1, 1)
-            time.sleep(0.05)
-            led.set_output(1, 0)
-            time.sleep(0.05)
+    while stillthere_event.is_set():  # run while event is set
+        buzzer.beep(0.5, 0.05, 0)
+        led.set_output(1, 1)
+        time.sleep(0.05)
+        led.set_output(1, 0)
+        time.sleep(0.05)
 
 
 def key_pressed(key):  # puts key into queue
