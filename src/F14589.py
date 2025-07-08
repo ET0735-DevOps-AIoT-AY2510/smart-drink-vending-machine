@@ -27,15 +27,14 @@ def main():
     ir_sensor.init()
     servo.init()
     keypad.init(g.key_pressed)
-    keypad_thread = Thread(target=keypad.get_key,
-                           daemon=True)  # constantly gets key
+    keypad_thread = Thread(target = keypad.get_key, daemon = True)  # constantly gets key
     keypad_thread.start()
-    security_thread = Thread(target=g.stillthere_func, daemon=True)
+    security_thread = Thread(target = g.stillthere_func, daemon = True)
     security_thread.start()
-    inactivity_thread = Thread(target=f1.inactivity_check, daemon=True)
+    inactivity_thread = Thread(target = f1.inactivity_check, daemon = True)
     inactivity_thread.start()
     f4.main()
-    f8_main_thread = Thread(target=f8.main)
+    f8_main_thread = Thread(target = f8.main)
     f8_main_thread.start()
     f9.main()
 
