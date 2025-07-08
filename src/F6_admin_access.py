@@ -46,8 +46,8 @@ def main():
 def unlock_door():
     g.stillthere_event.clear()
     servo.set_servo_position(90)
-    g.LCD.lcd_clear()
-    g.LCD.lcd_display_string("Door Unlocked", 1)
+    g.lcd_queue.put("clear")
+    g.lcd_queue.put(("Door Unlocked", 1))
     g.stillthere = False
 
 
@@ -56,16 +56,16 @@ def security_check():
         g.elapsed = time.time()
     if not g.security_prompt:
         g.stillthere_event.set()
-        g.LCD.lcd_clear()
-        g.LCD.lcd_display_string("Still there?", 1)
-        g.LCD.lcd_display_string("Click anything", 2)
+        g.lcd_queue.put()
+        g.lcd_queue.put(("Still there?", 1))
+        g.lcd_queue.put(("Click anything", 2))
 
 
 def timeout():
     g.stillthere_event.clear()
     servo.set_servo_position(0)
-    g.LCD.lcd_clear()
-    g.LCD.lcd_display_string("Locking Door", 1)
+    g.lcd_queue.put("clear")
+    g.lcd_queue.put(("Locking Door", 1))
     led.set_output(1, 0)
     time.sleep(3)
 

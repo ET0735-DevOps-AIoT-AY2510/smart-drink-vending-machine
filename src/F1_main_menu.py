@@ -35,10 +35,10 @@ def inactivity_check():
 
 
 def homescreen():
-    g.LCD.lcd_clear()
+    g.lcd_queue.put("clear")
     g.storeSelection = []
-    g.LCD.lcd_display_string("Welcome, please", 1)
-    g.LCD.lcd_display_string("select a drink", 2)
+    g.lcd_queue.put(("Welcome, please", 1))
+    g.lcd_queue.put(("select a drink", 2))
 
 
 def keypad_press_lcd_display():
@@ -49,7 +49,7 @@ def keypad_press_lcd_display():
         keyvalue = str(key)  # convert key int to key string
 
         if key == "*":  # clear lcd when * is pressed and reset key array
-            g.LCD.lcd_clear()
+            g.lcd_queue.put("clear")
             homescreen()
             g.storeSelection = []
             g.waiting_for_payment = False
@@ -57,16 +57,16 @@ def keypad_press_lcd_display():
 
         if g.waiting_for_payment:
             if key == 1:
-                g.LCD.lcd_clear()
-                g.LCD.lcd_display_string("card", 1)
+                g.lcd_queue.put("clear")
+                g.lcd_queue.put(("card", 1))
                 time.sleep(5)
                 # put card payment here
                 homescreen()
                 g.waiting_for_payment = False
 
             elif key == 2:
-                g.LCD.lcd_clear()
-                g.LCD.lcd_display_string("qr code", 1)
+                g.lcd_queue.put("clear")
+                g.lcd_queue.put(("qr code", 1))
                 time.sleep(5)
                 # put qr code payment here
                 homescreen()
@@ -75,11 +75,11 @@ def keypad_press_lcd_display():
             continue
 
         if len(g.storeSelection) > 5:  # entered number is greater than admin code
-            g.LCD.lcd_clear()
-            g.LCD.lcd_display_string("Invalid number,", 1)
-            g.LCD.lcd_display_string("please retry", 2)
+            g.lcd_queue.put("clear")
+            g.lcd_queue.put(("Invalid number,", 1))
+            g.lcd_queue.put(("please retry", 2))
             time.sleep(5)
-            g.LCD.lcd_clear()
+            g.lcd_queue.put("clear")
             g.storeSelection = []
 
         elif key == "#":
@@ -92,34 +92,33 @@ def keypad_press_lcd_display():
                 drink = g.drink_database[selection]
 
                 if drink["stock"] > 0:  # drink has stock
-                    g.LCD.lcd_clear()
-                    g.LCD.lcd_display_string(
-                        drink["name"]+" "+drink["price"], 1)
-                    g.LCD.lcd_display_string("1=Card 2=QR Code", 2)
+                    g.lcd_queue.put("clear")
+                    g.lcd_queue.put((drink["name"]+" "+drink["price"], 1))
+                    g.lcd_queue.put(("1=Card 2=QR Code", 2))
                     g.waiting_for_payment = True
                     g.storeSelection = []
 
                 else:  # drink no stock
-                    g.LCD.lcd_display_string("Drink out", 1)
-                    g.LCD.lcd_display_string("of stock", 2)
+                    g.lcd_queue.put(("Drink out", 1))
+                    g.lcd_queue.put(("of stock", 2))
                     time.sleep(5)
-                    g.LCD.lcd_clear()
+                    g.lcd_queue.put("clear")
                     g.storeSelection = []
 
             else:  # drink number doesnt exist
-                g.LCD.lcd_display_string("Invalid, Please", 1)
-                g.LCD.lcd_display_string("try again", 2)
+                g.lcd_queue.put(("Invalid, Please", 1))
+                g.lcd_queue.put(("try again", 2))
                 time.sleep(5)
-                g.LCD.lcd_clear()
+                g.lcd_queue.put("clear")
                 g.storeSelection = []
 
         else:
             if len(g.storeSelection) < 6:
-                g.LCD.lcd_clear()
+                g.lcd_queue.put("clear")
                 # stores most recent key press into array
                 g.storeSelection.append(keyvalue)
                 # displays key on lcd (cummulative)
-                g.LCD.lcd_display_string("".join(g.storeSelection), 1)
+                g.lcd_queue.put(("".join(g.storeSelection), 1))
 
 
 if __name__ == "__main__":

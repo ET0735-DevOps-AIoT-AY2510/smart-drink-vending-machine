@@ -2,7 +2,6 @@ import time
 from hal import hal_led as led
 from hal import hal_temp_humidity_sensor as temp_humid
 from threading import Thread
-import smtplib
 from email.message import EmailMessage
 import variables as g
 
@@ -58,9 +57,9 @@ def temp_Monitor():
             g.check20 = 0
 
         if (g.waiting_for_payment == 0 and not g.out_of_order) and g.temp >= 20:
-            g.LCD.lcd_clear()
-            g.LCD.lcd_display_string("Machine out", 1)
-            g.LCD.lcd_display_string("of order", 2)
+            g.lcd_queue.put("clear")
+            g.lcd_queue.put(("Machine out", 1))
+            g.lcd_queue.put(("of order", 2))
             g.out_of_order = True
 
 

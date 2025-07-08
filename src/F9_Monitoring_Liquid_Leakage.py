@@ -2,7 +2,6 @@ from hal import hal_moisture_sensor as moistSens
 from hal import hal_led as led
 import time
 from threading import Thread
-import smtplib
 from email.message import EmailMessage
 import variables as g
 
@@ -42,9 +41,9 @@ def monitor_leak():  # send email if moisture detected, display out of order
             g.emailCheckLeak == 1
 
         if (g.waiting_for_payment == 0 and not g.out_of_order) and g.moist == True:
-            g.LCD.lcd_clear()
-            g.LCD.lcd_display_string("Machine out", 1)
-            g.LCD.lcd_display_string("of order", 2)
+            g.lcd_queue.put("clear")
+            g.lcd_queue.put(("Machine out", 1))
+            g.lcd_queue.put(("of order", 2))
             g.out_of_order = True
 
 

@@ -9,9 +9,9 @@ def main():
     dispensing_drink(1)
 
 def dispensing_drink(drinkNum):
-    g.LCD.lcd_clear()
-    g.LCD.lcd_display_string("Payment made,", 1)
-    g.LCD.lcd_display_string("dispensing drink", 2)
+    g.lcd_queue.put("clear")
+    g.lcd_queue.put(("Payment made,", 1))
+    g.lcd_queue.put(("dispensing drink", 2))
     dc.set_motor_speed(50)
     time.sleep(2)
     dc.set_motor_speed(0)
