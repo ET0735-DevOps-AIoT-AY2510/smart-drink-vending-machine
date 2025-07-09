@@ -1,7 +1,7 @@
 import time
 from hal import hal_dc_motor as dc
 import variables as g
-
+import F7_monitoring_stocks as f7
 
 def main():
     dc.init()
@@ -16,6 +16,15 @@ def dispensing_drink(drinkNum):
     time.sleep(2)
     dc.set_motor_speed(0)
     g.drink_database[drinkNum]["stock"] -= 1
+
+    #if g.drink_database[drinkNum]["stock"] > f7.stock:
+    #    g.send_email(receiver_email='nathanchew2007@gmail.com',
+     #       subject='Vending Machine Jammed',
+      #      body_text='Vending Machine Jammed')
+    #elif g.drink_database[drinkNum]["stock"] < f7.stock:
+     #   g.send_email(receiver_email='nathanchew2007@gmail.com',
+      #      subject='Extra drink dispensed',
+       #     body_text='Extra drink dispensed')
 
 if __name__ == "__main__":
     main()

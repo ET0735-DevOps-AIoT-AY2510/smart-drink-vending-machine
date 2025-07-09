@@ -29,18 +29,17 @@ def main():
     servo.init()
     keypad.init(g.key_pressed)
 
-    lcd_print_thread = Thread(target=display.lcd_print, daemon=True)
+    lcd_print_thread = Thread(target = display.lcd_print, daemon = True)
     lcd_print_thread.start()
-    keypad_thread = Thread(target=keypad.get_key,
-                           daemon=True)  # constantly gets key
+    keypad_thread = Thread(target = keypad.get_key, daemon = True)  # constantly gets key
     keypad_thread.start()
-    inactivity_thread = Thread(target=f1.inactivity_check, daemon=True)
+    inactivity_thread = Thread(target = f1.inactivity_check, daemon = True)
     inactivity_thread.start()
     f4.main()
-    f8_main_thread = Thread(target=f8.main)
+    f8_main_thread = Thread(target = f8.main)
     f8_main_thread.start()
     f9.main()
-    main_menu_thread = Thread(target=keypad_press_lcd_display)
+    main_menu_thread = Thread(target = keypad_press_lcd_display)
     main_menu_thread.start()
     f1.homescreen()
     f4threads = False
@@ -48,12 +47,12 @@ def main():
     while True:
         if not f4threads and g.temp >= 10:
             f4.temp_Monitor()
-            ledBlink_thread = Thread(target=f4.ledBlink)
+            ledBlink_thread = Thread(target = f4.ledBlink)
             ledBlink_thread.start()
             f4threads = True
         elif not f9threads and g.moist:
             f9.monitor_leak()
-            ledBlinkLeak_thread = Thread(target=f9.ledBlinkLeak, daemon=True)
+            ledBlinkLeak_thread = Thread(target = f9.ledBlinkLeak, daemon = True)
             ledBlinkLeak_thread.start()
             f9threads = True
         else:
@@ -111,8 +110,8 @@ def keypad_press_lcd_display():
                 g.shared_keypad_queue.put("*")
             elif g.out_of_order:
                 g.lcd_queue.put("clear")
-                g.lcd_queue.put(("All drinks", 1))
-                g.lcd_queue.put(("are unavailable", 2))
+                g.lcd_queue.put(("Drink Purchase", 1))
+                g.lcd_queue.put(("is suspended", 2))
                 time.sleep(5)
                 g.lcd_queue.put("clear")
                 g.storeSelection = []
