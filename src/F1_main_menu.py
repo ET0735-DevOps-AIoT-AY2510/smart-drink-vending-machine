@@ -31,14 +31,20 @@ def inactivity_check():
         if time.time() - g.last_key_time > 30:
             homescreen()
             g.last_key_time = time.time()  # reset to avoid repeated homescreen calls
-        time.sleep(1)  # prevent lag?
+        time.sleep(30)  # prevent lag?
 
 
 def homescreen():
-    g.lcd_queue.put("clear")
-    g.storeSelection = []
-    g.lcd_queue.put(("Welcome, please", 1))
-    g.lcd_queue.put(("select a drink", 2))
+    if g.out_of_order:
+        g.lcd_queue.put("clear")
+        g.storeSelection = []
+        g.lcd_queue.put(("Machine out", 1))
+        g.lcd_queue.put(("of order", 2))
+    else:
+        g.lcd_queue.put("clear")
+        g.storeSelection = []
+        g.lcd_queue.put(("Welcome, please", 1))
+        g.lcd_queue.put(("select a drink", 2))
 
 
 def keypad_press_lcd_display():

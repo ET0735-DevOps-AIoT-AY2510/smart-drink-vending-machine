@@ -59,11 +59,11 @@ def stillthere_func():
 
 def key_pressed(key):  # puts key into queue
     global last_key_time, stillthere
-    if out_of_order == False:
+    if (time.time() - elapsed >= 5) and BurglarState and out_of_order:
+        stillthere = True
+    elif not BurglarState:
         last_key_time = time.time()
         shared_keypad_queue.put(key)
-    elif (time.time() - elapsed >= 5) and BurglarState:
-        stillthere = True
 
 
 def send_email(receiver_email, subject, body_text, image_path=None):

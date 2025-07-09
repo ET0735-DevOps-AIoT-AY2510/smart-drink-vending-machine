@@ -53,7 +53,7 @@ def main():
             f4threads = True
         elif not f9threads and g.moist:
             f9.monitor_leak()
-            ledBlinkLeak_thread = Thread(target=f4.ledBlinkLeak, daemon=True)
+            ledBlinkLeak_thread = Thread(target=f9.ledBlinkLeak, daemon=True)
             ledBlinkLeak_thread.start()
             f9threads = True
         else:
@@ -109,6 +109,13 @@ def keypad_press_lcd_display():
             if selection == 12345:
                 f6.main()
                 g.shared_keypad_queue.put("*")
+            elif g.out_of_order:
+                g.lcd_queue.put("clear")
+                g.lcd_queue.put(("All drinks", 1))
+                g.lcd_queue.put(("are unavailable", 2))
+                time.sleep(5)
+                g.lcd_queue.put("clear")
+                g.storeSelection = []
             elif selection in g.drink_database:  # drink number exists
                 drink = g.drink_database[selection]
 
@@ -120,6 +127,7 @@ def keypad_press_lcd_display():
                     g.storeSelection = []
 
                 else:  # drink no stock
+                    g.lcd_queue.put("clear")
                     g.lcd_queue.put(("Drink out", 1))
                     g.lcd_queue.put(("of stock", 2))
                     time.sleep(5)
@@ -127,6 +135,7 @@ def keypad_press_lcd_display():
                     g.storeSelection = []
 
             else:  # drink number doesnt exist
+                g.lcd_queue.put("clear")
                 g.lcd_queue.put(("Invalid, Please", 1))
                 g.lcd_queue.put(("try again", 2))
                 time.sleep(5)
