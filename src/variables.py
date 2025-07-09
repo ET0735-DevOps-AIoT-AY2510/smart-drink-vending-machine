@@ -48,13 +48,21 @@ sender_email = 'devopsgroup2project@gmail.com'
 sender_password = 'imks ngdl jfte ksey'
 
 
+def ledBlink():
+    while not BurglarState:
+        if waiting_for_payment == 0:
+            led.set_output(24, 1)
+            time.sleep(0.2)
+            led.set_output(24, 0)
+            time.sleep(0.2)
+        else:
+            time.sleep(0.1)
+            print(2)
+
+
 def stillthere_func():
     while stillthere_event.is_set():  # run while event is set
-        buzzer.beep(0.5, 0.05, 0)
-        led.set_output(1, 1)
-        time.sleep(0.05)
-        led.set_output(1, 0)
-        time.sleep(0.05)
+        buzzer.beep(0.5, 1, 1)
 
 
 def key_pressed(key):  # puts key into queue

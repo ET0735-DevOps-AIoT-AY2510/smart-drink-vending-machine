@@ -29,34 +29,33 @@ def main():
     servo.init()
     keypad.init(g.key_pressed)
 
-    lcd_print_thread = Thread(target = display.lcd_print, daemon = True)
+    lcd_print_thread = Thread(target=display.lcd_print, daemon=True)
     lcd_print_thread.start()
-    keypad_thread = Thread(target = keypad.get_key, daemon = True)  # constantly gets key
+    keypad_thread = Thread(target=keypad.get_key,
+                           daemon=True)  # constantly gets key
     keypad_thread.start()
-    inactivity_thread = Thread(target = f1.inactivity_check, daemon = True)
+    inactivity_thread = Thread(target=f1.inactivity_check, daemon=True)
     inactivity_thread.start()
     f4.main()
-    f8_main_thread = Thread(target = f8.main)
+    f8_main_thread = Thread(target=f8.main)
     f8_main_thread.start()
     f9.main()
-    main_menu_thread = Thread(target = keypad_press_lcd_display)
+    main_menu_thread = Thread(target=keypad_press_lcd_display)
     main_menu_thread.start()
     f1.homescreen()
-    f4threads = False
-    f9threads = False
     while True:
-        if not f4threads and g.temp >= 10:
+        if not g.check10 and g.temp >= 10:
             f4.temp_Monitor()
-            ledBlink_thread = Thread(target = f4.ledBlink)
+        elif not g.check20 and g.temp >= 20:
+            ledBlink_thread = Thread(target=g.ledBlink, daemon=True)
             ledBlink_thread.start()
-            f4threads = True
-        elif not f9threads and g.moist:
+            f4.temp_Monitor()
+        elif not g.emailCheckLeak and g.moist:
+            ledBlink_thread = Thread(target=g.ledBlink, daemon=True)
+            ledBlink_thread.start()
             f9.monitor_leak()
-            ledBlinkLeak_thread = Thread(target = f9.ledBlinkLeak, daemon = True)
-            ledBlinkLeak_thread.start()
-            f9threads = True
         else:
-            time.sleep(0.1)
+            time.sleep(1)
 
 
 def keypad_press_lcd_display():
@@ -80,8 +79,8 @@ def keypad_press_lcd_display():
                 time.sleep(5)
                 # put card payment here
                 f5.dispensing_drink(selection)
-                f1.homescreen()
                 g.waiting_for_payment = False
+                time.sleep(1)
 
             elif key == 2:
                 g.lcd_queue.put("clear")
@@ -89,8 +88,8 @@ def keypad_press_lcd_display():
                 time.sleep(5)
                 # put qr code payment here
                 f5.dispensing_drink(selection)
-                f1.homescreen()
                 g.waiting_for_payment = False
+                time.sleep(1)
 
             continue
 
@@ -115,6 +114,8 @@ def keypad_press_lcd_display():
                 time.sleep(5)
                 g.lcd_queue.put("clear")
                 g.storeSelection = []
+                g.lcd_queue.put(("Machine out", 1))
+                g.lcd_queue.put(("of order", 2))
             elif selection in g.drink_database:  # drink number exists
                 drink = g.drink_database[selection]
 

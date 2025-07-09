@@ -14,17 +14,12 @@ def main():
 def tempGet():  # constantly gets temp through thread in main
     while True:
         g.temp = 5
+        time.sleep(10)
+        g.temp = 10
         '''g.temp, _ = temp_humid.read_temp_humidity()'''
-        time.sleep(5)
-
-
-def ledBlink():
-    if g.temp >= 20 and g.waiting_for_payment == 0:
-        while g.out_of_order:
-            led.set_output(24, 1)
-            time.sleep(0.2)
-            led.set_output(24, 0)
-            time.sleep(0.2)
+        time.sleep(10)
+        g.temp = 20
+        time.sleep(10)
 
 
 def temp_Monitor():
@@ -47,14 +42,10 @@ def temp_Monitor():
         )
 
         g.check10 = 1
-
-    if g.temp < 10:
-        g.check10 = 0
-
-    elif g.temp < 20:
-        g.check20 = 0
-
-    if (g.waiting_for_payment == 0 and not g.out_of_order) and g.temp >= 20:
+    while g.waiting_for_payment and g.check20:
+        time.sleep(1)
+    if (g.waiting_for_payment == 0 and not g.out_of_order) and g.check20:
+        g.storeSelection = []
         g.lcd_queue.put("clear")
         g.lcd_queue.put(("Machine out", 1))
         g.lcd_queue.put(("of order", 2))

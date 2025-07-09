@@ -17,15 +17,6 @@ def getMoist():  # constantly detect moisture
         time.sleep(5)
 
 
-def ledBlinkLeak():  # blink if moisture is detected and user isnt interacting
-    if g.moist and g.waiting_for_payment == 0:
-        while g.out_of_order:
-            led.set_output(24, 10)
-            time.sleep(0.2)
-            led.set_output(24, 0)
-            time.sleep(0.2)
-
-
 def monitor_leak():  # send email if moisture detected, display out of order
     if g.moist and g.emailCheckLeak == 0:
         g.send_email(
@@ -34,8 +25,10 @@ def monitor_leak():  # send email if moisture detected, display out of order
             body_text='Liquid Leakage detected in Vending Machine'
         )
         g.emailCheckLeak == 1
-
-    if (g.waiting_for_payment == 0 and not g.out_of_order) and g.moist == True:
+    while g.waiting_for_payment and g.emailCheckLeak:
+        time.sleep(1)
+    if (g.waiting_for_payment == 0 and not g.out_of_order) and g.emailCheckLeak == True:
+        g.storeSelection = []
         g.lcd_queue.put("clear")
         g.lcd_queue.put(("Machine out", 1))
         g.lcd_queue.put(("of order", 2))

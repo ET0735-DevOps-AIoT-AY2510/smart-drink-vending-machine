@@ -15,7 +15,7 @@ def main():
     g.stillthere = True
     g.security_prompt = True
     g.waiting_for_payment = True  # So that the other LED functions are disabled
-    time.sleep(10)
+    time.sleep(3)
     '''keypad.init(key_pressed)
     keypad_thread = Thread(target=keypad.get_key, daemon=True)
     keypad_thread.start()'''
@@ -40,6 +40,8 @@ def main():
     g.emailCheckLeak = 0
     g.check10 = 0
     g.check20 = 0
+    if security_thread.is_alive():
+        security_thread.join()
 
 
 '''def key_pressed(key):
@@ -63,7 +65,6 @@ def security_check():
     if not g.security_prompt:
         g.lcd_queue.put("clear")
         g.lcd_queue.put(("Still there?", 1))
-        g.lcd_queue.put(("Click anything", 2))
 
 
 def timeout():
