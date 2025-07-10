@@ -69,7 +69,7 @@ def key_pressed(key):  # puts key into queue
     global last_key_time, stillthere
     if (time.time() - elapsed >= 5) and BurglarState and out_of_order:
         stillthere = True
-    elif not BurglarState:
+    elif not BurglarState and not stillthere_event.is_set():
         last_key_time = time.time()
         shared_keypad_queue.put(key)
 

@@ -24,21 +24,15 @@ def main():
             camera_thread = Thread(target=camerafeature)
             camera_thread.start()
 
-            g.send_email(
-                receiver_email='terencetngkc2007@gmail.com',
-                subject='Image of Burglar',
-                body_text='Burglar Detected.',
-                image_path='idk.jpg'
-            )
             while not g.BurglarState and not ir_sensor.get_ir_sensor_state():
                 # So that it does not keep sending emails
                 servo.set_servo_position(0)
                 time.sleep(0.1)
         try:
             if not g.BurglarState and ir_sensor.get_ir_sensor_state() and security_thread.is_alive():
-                g.stillthere_event.clear()
-                security_thread.join()
-                camera_thread.join()
+                if not camera_thread.is_alive():
+                    g.stillthere_event.clear()
+                    security_thread.join()
         except NameError:
             # security_thread does not exist yet
             pass
@@ -62,6 +56,12 @@ def camerafeature():
     picam2.capture_file("idk.jpg")
     picam2.stop_preview()
     picam2.close()
+    g.send_email(
+        receiver_email='terencetngkc2007@gmail.com',
+        subject='Image of Burglar',
+        body_text='Burglar Detected.',
+        image_path='idk.jpg'
+    )
 
 
 if __name__ == '__main__':
