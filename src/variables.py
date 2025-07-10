@@ -9,6 +9,8 @@ from email.message import EmailMessage
 from email.utils import make_msgid
 from pathlib import Path
 
+card_declined = False
+
 stillthere = True
 LCD = LCD.lcd()
 elapsed = time.time()
@@ -47,6 +49,7 @@ waiting_for_payment = False
 sender_email = 'devopsgroup2project@gmail.com'
 sender_password = 'imks ngdl jfte ksey'
 
+stock = 0
 
 def ledBlink():
     while not BurglarState:
