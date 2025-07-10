@@ -1,19 +1,5 @@
-import RPi.GPIO as GPIO
 import time
 from hal import hal_usonic as usonic
-
-
-
-def init():
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setwarnings(False)
-
-    # GPIO25 as Trig
-    GPIO.setup(25, GPIO.OUT)
-
-    # GPIO27 as Echo
-    GPIO.setup(27, GPIO.IN)
-
 
 #define a function called distance below:
 def get_distance():
@@ -35,16 +21,16 @@ def remaining_stock():
     
     return stock
 
-def alert_staff():
-    stock = remaining_stock() # Get stock value
-
+def alert_staff(stock):
+    #get stock value 
+    
     if stock < 5:
       # Email staff
       print("email")
 
 
 def main():
-    init()  
+    usonic.init()  
     while True:  
         distance = get_distance()
         stock = remaining_stock()
