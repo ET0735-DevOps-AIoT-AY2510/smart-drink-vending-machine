@@ -43,8 +43,6 @@ lcd_queue = queue.Queue()
 
 last_key_time = time.time()
 
-drink = {22: {"name": "Default", "price": "NIL", "stock": 10}}
-
 waiting_for_payment = False
 
 sender_email = 'devopsgroup2project@gmail.com'

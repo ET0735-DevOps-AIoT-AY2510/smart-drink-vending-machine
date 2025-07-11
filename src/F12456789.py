@@ -87,7 +87,7 @@ def keypad_press_lcd_display():
                     g.card_declined = True
                 else:
                     g.lcd_queue.put("clear")
-                    g.lcd_queue.put((g.drink["name"]+" "+g.drink["price"], 1))
+                    g.lcd_queue.put((g.drink_database[g.selection]["name"]+" "+g.drink_database[g.selection]["price"], 1))
                     g.lcd_queue.put(("1=Card 2=QR Code", 2))
                 time.sleep(1)
 
@@ -127,11 +127,9 @@ def keypad_press_lcd_display():
                 g.lcd_queue.put(("Machine out", 1))
                 g.lcd_queue.put(("of order", 2))
             elif g.selection in g.drink_database:  # drink number exists
-                g.drink = g.drink_database[g.selection]
-
-                if g.drink["stock"] > 0:  # drink has stock
+                if g.drink_database[g.selection]["stock"] > 0:  # drink has stock
                     g.lcd_queue.put("clear")
-                    g.lcd_queue.put((g.drink["name"]+" "+g.drink["price"], 1))
+                    g.lcd_queue.put((g.drink_database[g.selection]["name"]+" "+g.drink_database[g.selection]["price"], 1))
                     g.lcd_queue.put(("1=Card 2=QR Code", 2))
                     g.waiting_for_payment = True
                     g.storeSelection = []
