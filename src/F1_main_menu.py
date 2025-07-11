@@ -30,7 +30,8 @@ def inactivity_check():
     while True:
         if time.time() - g.last_key_time > 30:
             homescreen()
-            g.last_key_time = time.time()  # reset to avoid repeated homescreen calls
+            g.last_key_time = time.time()
+            g.waiting_for_payment = False  # reset to avoid repeated homescreen calls
         time.sleep(30)  # prevent lag?
 
 

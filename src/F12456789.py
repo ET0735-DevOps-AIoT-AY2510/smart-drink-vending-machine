@@ -78,15 +78,16 @@ def keypad_press_lcd_display():
 
         if g.waiting_for_payment:
             if key == 1:
-                g.lcd_queue.put("clear")
-                time.sleep(5)
                 f2.tap_card_lcd_display()
                 f2.rfid_input()
-                g.waiting_for_payment = False
                 if g.card_declined == False:
                     f5.dispensing_drink(selection)
-                    f7.remaining_stock()
-                    
+                    f7.remaining_stock
+                    g.waiting_for_payment = False
+                else:
+                    g.lcd_queue.put("clear")
+                    g.lcd_queue.put((drink["name"]+" "+drink["price"], 1))
+                    g.lcd_queue.put(("1=Card 2=QR Code", 2))
                 time.sleep(1)
 
             elif key == 2:
