@@ -10,6 +10,7 @@ from email.utils import make_msgid
 from pathlib import Path
 
 card_declined = True
+selection = 0
 
 stillthere = True
 LCD = LCD.lcd()

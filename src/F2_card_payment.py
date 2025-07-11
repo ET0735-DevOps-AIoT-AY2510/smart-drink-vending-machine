@@ -11,10 +11,10 @@ def main():
     rfid_input_thread.start()
 
 
-def tap_card_lcd_display():
+def tap_card_lcd_display(drinkNum):
     g.lcd_queue.put("clear")
     g.lcd_queue.put(
-        (f"{g.drink_database[1]['name']} ${g.drink_database[1]['price']}", 1))
+        (f"{g.drink_database[drinkNum]['name']} ${g.drink_database[drinkNum]['price']}", 1))
     g.lcd_queue.put(("Please tap card", 2))
 
 
