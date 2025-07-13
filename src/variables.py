@@ -48,6 +48,7 @@ waiting_for_payment = False
 sender_email = 'devopsgroup2project@gmail.com'
 sender_password = 'imks ngdl jfte ksey'
 
+card_data_string = 0
 stock = 0
 
 

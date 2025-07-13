@@ -70,7 +70,6 @@ def keypad_press_lcd_display():
         keyvalue = str(key)  # convert key int to key string
 
         if key == "*":  # clear lcd when * is pressed and reset key array
-            g.lcd_queue.put("clear")
             f1.homescreen()
             g.storeSelection = []
             g.waiting_for_payment = False
@@ -80,16 +79,21 @@ def keypad_press_lcd_display():
             if key == 1:
                 f2.tap_card_lcd_display(g.selection)
                 f2.rfid_input()
-                if g.card_declined == False:
-                    f5.dispensing_drink(g.selection)
-                    f7.remaining_stock()
-                    g.waiting_for_payment = False
-                    g.card_declined = True
-                else:
-                    g.lcd_queue.put("clear")
-                    g.lcd_queue.put((g.drink_database[g.selection]["name"]+" "+g.drink_database[g.selection]["price"], 1))
-                    g.lcd_queue.put(("1=Card 2=QR Code", 2))
-                time.sleep(1)
+                if g.card_data_string != 0:
+                    if g.card_declined == False:
+                        f5.dispensing_drink(g.selection)
+                        f7.remaining_stock(g.selection)
+                        f1.homescreen()
+                        g.card_data_string = 0
+                        g.waiting_for_payment = False
+                        g.card_declined = True
+                    else:
+                        g.lcd_queue.put("clear")
+                        g.lcd_queue.put(
+                            (g.drink_database[g.selection]["name"]+" "+g.drink_database[g.selection]["price"], 1))
+                        g.lcd_queue.put(("1=Card 2=QR Code", 2))
+                        g.card_data_string = 0
+                    time.sleep(1)
 
             elif key == 2:
                 g.lcd_queue.put("clear")
@@ -97,7 +101,7 @@ def keypad_press_lcd_display():
                 time.sleep(5)
                 # put qr code payment here
                 f5.dispensing_drink(g.selection)
-                f7.remaining_stock()
+                f7.remaining_stock(g.selection)
                 g.waiting_for_payment = False
                 time.sleep(1)
 
@@ -129,7 +133,8 @@ def keypad_press_lcd_display():
             elif g.selection in g.drink_database:  # drink number exists
                 if g.drink_database[g.selection]["stock"] > 0:  # drink has stock
                     g.lcd_queue.put("clear")
-                    g.lcd_queue.put((g.drink_database[g.selection]["name"]+" "+g.drink_database[g.selection]["price"], 1))
+                    g.lcd_queue.put(
+                        (g.drink_database[g.selection]["name"]+" "+g.drink_database[g.selection]["price"], 1))
                     g.lcd_queue.put(("1=Card 2=QR Code", 2))
                     g.waiting_for_payment = True
                     g.storeSelection = []
