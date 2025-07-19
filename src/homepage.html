@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="utf-8"> 
+        <title>Homepage</title>
+        <link rel="stylesheet" href="homepage.css">
+        <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-header">
+            <h2>Welcome to the drink vending machine!</h2>
+        </div>
+
+        <div class="auth-buttons">
+            <p class="button-label">Get started by clicking here!</p>
+            <button id="signupBtn" class="auth-btn signup-btn">Sign Up</button>
+            <p class="button-label">Already have an account? Click here!</p>
+            <button id="loginBtn" class="auth-btn login-btn">Log In</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            //get buttons
+            const signupBtn = document.getElementById('signupBtn');
+            const loginBtn = document.getElementById('loginBtn');
+            
+        signupBtn.addEventListener('click', function() {
+        window.location.href = 'signup.html'; 
+        });
+
+        loginBtn.addEventListener('click', function() {
+        window.location.href = 'login.html'; 
+        });
+
+            
+            // Hover effects
+            const buttons = document.querySelectorAll('.auth-btn');
+            buttons.forEach(button => {
+                button.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.05)';
+                    this.style.transition = 'transform 0.2s ease';
+                });
+                
+                button.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
