@@ -36,6 +36,7 @@ def main():
         except NameError:
             # security_thread does not exist yet
             pass
+        time.sleep(1)
 
 
 '''def forcedlock():

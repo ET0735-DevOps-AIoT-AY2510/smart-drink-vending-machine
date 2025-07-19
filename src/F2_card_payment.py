@@ -20,7 +20,7 @@ def tap_card_lcd_display(drinkNum):
 
 
 def rfid_input():
-    while time.time() - g.last_key_time <= 14:
+    while time.time() - g.last_key_time <= 14.5:
         try:
             if g.shared_keypad_queue.get(block=False) == "*":
                 g.shared_keypad_queue.put("*")
@@ -40,12 +40,12 @@ def rfid_input():
         if g.card_data_string in accepted_card_data:  # accepted card
             g.card_declined = False
             # No need to say payment success as it is stated in f5
-            buzzer.beep(0.05, 0.5, 1)
+            buzzer.beep(0.5, 0, 1)
             time.sleep(1)
         else:
             g.card_declined = True
             g.lcd_queue.put("clear")  # declined card
-            buzzer.beep(0.5, 1, 1)
+            buzzer.beep(1, 1, 1)
             g.lcd_queue.put(("Card declined,", 1))
             g.lcd_queue.put(("please try again", 2))
             time.sleep(1)
