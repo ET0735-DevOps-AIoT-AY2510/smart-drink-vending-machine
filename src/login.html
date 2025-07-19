@@ -9,10 +9,26 @@
     </head>
     <body>
 <form class="box" action="login.html" method="post"> 
+    <a href="homepage.html" class="return-button"> ← Return</a>
+    <img src="vending-machine.png" alt="Vending Machine Logo" class="logo">
     <h1>Drink Vending Machine</h1>
-    <input type="text" class="input-field" placeholder="Username" required>
-    <input type="text" class="input-field" placeholder="Password" required>
+    <input type="text" id= "username" class="input-field" placeholder="Username" required>
+    <input type="password" id="password" class="input-field" placeholder="Password" required>
+<label class="show-password-label">
+  <input type="checkbox" onclick="togglePassword()"> Show Password
+</label>
     <button type="submit" class="submit-btn">Enter</button>
 </form>
+<script>        
+        function togglePassword() {
+            const password = document.getElementById("password");
+
+            if (password.type === "password") {
+                password.type = "text";
+            } else {
+                password.type = "password";
+            }
+        }
+</script>
     </body>
 </html>
