@@ -16,6 +16,8 @@ camera_config = picam2.create_still_configuration(main={"size": (4056,
 picam2.configure(camera_config)
 picam2.start_preview(Preview.QTGL)
 picam2.start()
+escape = False
+qr_declined = True
 card_declined = True
 selection = 0
 

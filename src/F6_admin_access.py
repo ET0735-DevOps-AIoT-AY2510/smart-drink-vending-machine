@@ -34,6 +34,7 @@ def main():
             unlock_door(security_thread)
             g.security_prompt = False
     timeout()
+    g.last_key_time = time.time()
     g.BurglarState = False
     g.out_of_order = False
     g.waiting_for_payment = False
