@@ -202,6 +202,10 @@ def keypad_press_lcd_display():
                         print(f"Bounding Box: {obj.rect}\n")
                 else:
                     print("No barcode or QR code found.")
+                    code_data = None
+                if code_data == "12345":
+                    f6.main()
+                    g.shared_keypad_queue.put("*")
 
         else:
             if len(g.storeSelection) < 6:
