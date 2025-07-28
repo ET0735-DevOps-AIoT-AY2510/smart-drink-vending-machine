@@ -31,7 +31,8 @@ BurglarState = False
 drink_database = {
     1: {"name": "Coke", "price": "1.50", "stock": 4},
     6: {"name": "Sprite", "price": "1.50", "stock": 3},
-    13: {"name": "Lemon Tea", "price": "1.70", "stock": 1}
+    13: {"name": "Lemon Tea", "price": "1.70", "stock": 1},
+    19: {"name": "Water", "price": "1.30", "stock": 0}
 }
 
 storeSelection = []
