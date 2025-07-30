@@ -3,7 +3,7 @@ import F4_Monitoring_Temp_Conditions as f4
 def test_tempGet():
     f4.g.temp=0
     
-    f4.tempGet()
+    f4.tempGet(tester=1)
 
     assert f4.g.temp>0
 

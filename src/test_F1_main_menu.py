@@ -40,7 +40,7 @@ def test_keypad_press_lcd_display_Return_Button():
    f1.g.shared_keypad_queue = queue.Queue()
    f1.g.shared_keypad_queue.put("#")
 
-   f1.keypad_press_lcd_display()
+   f1.keypad_press_lcd_display(tester=1)
 
    assert f1.g.storeSelection == [] and f1.g.waiting_for_payment == False
 
@@ -50,7 +50,7 @@ def test_keypad_press_lcd_display_Card_select():
    f1.g.shared_keypad_queue = queue.Queue()
    f1.g.shared_keypad_queue.put(1)
 
-   f1.keypad_press_lcd_display()
+   f1.keypad_press_lcd_display(tester=1)
 
    assert f1.g.storeSelection == [] and f1.g.waiting_for_payment == False
 
@@ -61,7 +61,7 @@ def test_keypad_press_lcd_display_QRcode_select():
    f1.g.shared_keypad_queue = queue.Queue()
    f1.g.shared_keypad_queue.put(1)
 
-   f1.keypad_press_lcd_display()
+   f1.keypad_press_lcd_display(tester=1)
 
    assert f1.g.storeSelection == [] and f1.g.waiting_for_payment == False
 
@@ -71,7 +71,7 @@ def test_keypad_press_lcd_display_Drink_Available():
    f1.g.shared_keypad_queue = queue.Queue()
    f1.g.shared_keypad_queue.put("#")
 
-   f1.keypad_press_lcd_display()
+   f1.keypad_press_lcd_display(tester=1)
 
    assert f1.g.storeSelection == [] and f1.g.waiting_for_payment == True
 
@@ -81,7 +81,7 @@ def test_keypad_press_lcd_display_Drink_Unavailable():
    f1.g.shared_keypad_queue = queue.Queue()
    f1.g.shared_keypad_queue.put("#")
 
-   f1.keypad_press_lcd_display()
+   f1.keypad_press_lcd_display(tester=1)
 
    assert f1.g.storeSelection == [] and f1.g.waiting_for_payment == False
 
@@ -91,7 +91,7 @@ def test_keypad_press_lcd_display_No_Such_Drink():
    f1.g.shared_keypad_queue = queue.Queue()
    f1.g.shared_keypad_queue.put("#")
 
-   f1.keypad_press_lcd_display()
+   f1.keypad_press_lcd_display(tester=1)
 
    assert f1.g.storeSelection == [] and f1.g.waiting_for_payment == False
 

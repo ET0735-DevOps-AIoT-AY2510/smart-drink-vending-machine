@@ -3,7 +3,7 @@ import F9_Monitoring_Liquid_Leakage as f9
 def test_getMoist():
     f9.g.moist=True
 
-    f9.getMoist()
+    f9.getMoist(tester=1)
 
     assert f9.g.moist == False
 

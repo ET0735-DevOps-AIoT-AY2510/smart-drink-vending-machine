@@ -18,13 +18,15 @@ def main():
     keypad_press_lcd_display()
 
 
-def inactivity_check():
+def inactivity_check(tester=None):
     while True:
         if time.time() - g.last_key_time > 15 and g.BurglarState == False:
             homescreen()
             g.last_key_time = time.time()
             g.waiting_for_payment = False  # reset to avoid repeated homescreen calls
         time.sleep(1)  # prevent lag?
+        if tester is not None:
+            break
 
 
 def homescreen():
@@ -40,7 +42,7 @@ def homescreen():
         g.lcd_queue.put(("select a drink", 2))
 
 
-def keypad_press_lcd_display():
+def keypad_press_lcd_display(tester=None):
     g.waiting_for_payment = False
     g.storeSelection = []
     while True:
@@ -118,6 +120,8 @@ def keypad_press_lcd_display():
                 g.storeSelection.append(keyvalue)
                 # displays key on lcd (cummulative)
                 g.lcd_queue.put(("".join(g.storeSelection), 1))
+        if tester is not None:
+            break
 
 
 if __name__ == "__main__":
