@@ -43,9 +43,10 @@ def homescreen():
 
 
 def keypad_press_lcd_display(tester=None):
-    g.waiting_for_payment = False
-    g.storeSelection = []
-    while True:
+    while True and (tester == None or tester == 1):
+        if tester is not None:
+            tester = 2
+            
         key = g.shared_keypad_queue.get()  # gets key from queue
         keyvalue = str(key)  # convert key int to key string
 
@@ -72,7 +73,6 @@ def keypad_press_lcd_display(tester=None):
                 # put qr code payment here
                 homescreen()
                 g.waiting_for_payment = False
-
             continue
 
         if len(g.storeSelection) > 5:  # entered number is greater than admin code
@@ -120,8 +120,6 @@ def keypad_press_lcd_display(tester=None):
                 g.storeSelection.append(keyvalue)
                 # displays key on lcd (cummulative)
                 g.lcd_queue.put(("".join(g.storeSelection), 1))
-        if tester is not None:
-            break
 
 
 if __name__ == "__main__":
