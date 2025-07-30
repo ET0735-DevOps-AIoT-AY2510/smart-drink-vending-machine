@@ -11,9 +11,9 @@
 
     <body>
 
-<form class="box" action="signup.html" method="post" onsubmit="return validatePassword()">
+<form id="signupForm" class="box" onsubmit="return validatePassword()"> 
     <a href="homepage.html" class="return-button"> ← Return</a>
-    <img src="vending-machine.png" alt="Vending Machine Logo" class="logo">
+    <img src="images/vending-machine.png" alt="Vending Machine Logo" class="logo">
     <h1>Drink Vending Machine</h1>
     <input type="text" class="input-field" placeholder="Username" required>
     <input type="password" id="password" class="input-field" placeholder="Password" required>
@@ -51,6 +51,15 @@
                 confirmPassword.type = "password";
             }
         }
+
+        document.getElementById('signupForm').addEventListener('submit', function(event) {
+            if (!validatePassword()) {
+                event.preventDefault();
+                return;
+            }
+            event.preventDefault();
+            window.location.href = 'drink-page.html';
+        });
 </script>
     </body>
 </html>
