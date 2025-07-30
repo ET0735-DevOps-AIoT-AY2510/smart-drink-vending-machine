@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="utf-8"> 
+        <title>Collection Page</title>
+        <link rel="stylesheet" href="collection.css">
+        <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
+</head>
+<body>
+    <div class="container">
+    <header>
+      <h1>Collection</h1>
+    </header>
+            <hr>
+        <p>Payment successful!</p>
+        <div class="barcode"> 
+            <span>0123-4567</span>
+        </div>
+        <p>Flash this barcode at the vending machine camera to collect your drink!</p>
+        <button id="returnButton">Return</button>
+    </div>
+
+    <script>
+        document.getElementById('returnButton').addEventListener('click', function() {
+            window.location.href = 'drink-page.html';
+        });
+    </script>
+</body>
+</html>
