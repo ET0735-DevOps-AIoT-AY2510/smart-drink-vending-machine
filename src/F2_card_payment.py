@@ -1,59 +1,59 @@
 import time
 from threading import Thread
-import queue
-from hal import hal_keypad as keypad
-from hal import hal_lcd as LCD
 from hal import hal_rfid_reader as rfid_reader
 from hal import hal_buzzer as buzzer
 import variables as g
+import queue
 reader = rfid_reader.init()
 
 
 def main():
-    buzzer.init()
-    # start threads
-    Thread(target=rfid_input).start()  # start RFID checking
+    rfid_input_thread = Thread(target=rfid_input, daemon=True)
+    rfid_input_thread.start()
 
 
-def homescreen():
-    g.LCD.lcd_clear()
-    g.LCD.lcd_display_string("Welcome, please", 1)
-    g.LCD.lcd_display_string("select a drink", 2)
+def tap_card_lcd_display(drinkNum):
+    g.lcd_queue.put("clear")
+    g.lcd_queue.put(
+        (f"{g.drink_database[drinkNum]['name']} ${g.drink_database[drinkNum]['price']}", 1))
+    g.lcd_queue.put(("Please tap card", 2))
 
 
-def tap_card_lcd_display():
-    g.LCD.lcd_clear()
-    g.LCD.lcd_display_string(
-        f"{g.drink_database[1]['name']} ${g.drink_database[1]['price']}", 1)
-    g.LCD.lcd_display_string("please tap card", 2)
+def rfid_input(tester=None):
+    if tester is None:
+        while time.time() - g.last_key_time <= 14.5:
+            try:
+                if g.shared_keypad_queue.get(block=False) == "*":
+                    g.shared_keypad_queue.put("*")
+                    break
+            except queue.Empty:
+                pass
+            card_data = reader.read_id_no_block()
+            if card_data:
+                g.card_data_string = str(card_data)
+                break
+    elif tester==1:
+        g.card_data_string= "437194800967"
+    elif tester==0:
+        g.card_data_string= "1"
 
+    if g.card_data_string != 0:  # check if card was tapped
+        g.last_key_time = time.time()  # update time to when card is tapped
 
-def rfid_input():
-    while True:
-        card_data = reader.read_id_no_block()
-        card_data_string = str(card_data)
-        print(card_data_string)
-
-        if card_data_string:  # check if card was tapped
-            g.last_key_time = time.time()  # update time to when card is tapped
-
-            accepted_card_data = ["437194800967"]  # placeholder for id
-
-            if card_data_string in accepted_card_data:  # accepted card
-                g.LCD.lcd_clear()
-                buzzer.beep(0.05, 0.5, 1)
-                g.LCD.lcd_display_string("Payment Success", 1)
-                time.sleep(5)
-            else:
-                g.LCD.lcd_clear()  # declined card
-                buzzer.beep(0.5, 1, 1)
-                g.LCD.lcd_display_string("Card declined,", 1)
-                g.LCD.lcd_display_string("please try again", 2)
-                time.sleep(5)
-                tap_card_lcd_display()
-        time.sleep(5)
-
-        return False
+        accepted_card_data = ["437194800967", "765343767958"]  # card id
+        print(g.card_data_string)
+        if g.card_data_string in accepted_card_data:  # accepted card
+            g.card_declined = False
+            # No need to say payment success as it is stated in f5
+            buzzer.beep(0.5, 0, 1)
+            time.sleep(1)
+        else:
+            g.card_declined = True
+            g.lcd_queue.put("clear")  # declined card
+            buzzer.beep(1, 1, 1)
+            g.lcd_queue.put(("Card declined,", 1))
+            g.lcd_queue.put(("please try again", 2))
+            time.sleep(1)
 
 
 if __name__ == "__main__":
