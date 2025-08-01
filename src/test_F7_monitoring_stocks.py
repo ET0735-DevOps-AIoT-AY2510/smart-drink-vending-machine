@@ -26,8 +26,8 @@ def test_remaining_stock_Extra_Drink():
 
 
 def test_remaining_stock_Low_Stock():
-    # Make database stock equal to us stock
     drinkNum = 1
+    # Make database stock equal to 4, which is less than 5
     g.drink_database[drinkNum]["stock"] -= 1
     drinkNum = 1
 
