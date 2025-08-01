@@ -32,10 +32,10 @@ def rfid_input(tester=None):
             if card_data:
                 g.card_data_string = str(card_data)
                 break
-    elif tester==1:
-        g.card_data_string= "437194800967"
-    elif tester==0:
-        g.card_data_string= "1"
+    elif tester == 1:
+        g.card_data_string = "437194800967"
+    elif tester == 0:
+        g.card_data_string = "1"
 
     if g.card_data_string != 0:  # check if card was tapped
         g.last_key_time = time.time()  # update time to when card is tapped
@@ -45,12 +45,14 @@ def rfid_input(tester=None):
         if g.card_data_string in accepted_card_data:  # accepted card
             g.card_declined = False
             # No need to say payment success as it is stated in f5
-            buzzer.beep(0.5, 0, 1)
+            if tester is None:
+                buzzer.beep(0.5, 0, 1)
             time.sleep(1)
         else:
             g.card_declined = True
             g.lcd_queue.put("clear")  # declined card
-            buzzer.beep(1, 1, 1)
+            if tester is None:
+                buzzer.beep(1, 1, 1)
             g.lcd_queue.put(("Card declined,", 1))
             g.lcd_queue.put(("please try again", 2))
             time.sleep(1)
