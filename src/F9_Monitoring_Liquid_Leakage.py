@@ -11,13 +11,10 @@ def main():
     humid_check_thread.start()
 
 
-def getMoist(tester=None):  # constantly detect moisture
+def getMoist():  # constantly detect moisture
     while True:
         g.moist = moistSens.read_sensor()
         time.sleep(5)
-        if tester is not None:
-            break
-
 
 def monitor_leak():  # send email if moisture detected, display out of order
     if g.moist and g.emailCheckLeak == 0:

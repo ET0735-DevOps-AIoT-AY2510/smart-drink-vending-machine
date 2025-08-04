@@ -11,14 +11,10 @@ def main():
     temp_check_thread.start()
 
 
-def tempGet(tester=None):  # constantly gets temp through thread in main
+def tempGet():  # constantly gets temp through thread in main
     while True:
         time.sleep(10)
         g.temp, _ = temp_humid.read_temp_humidity()
-        if tester is not None:
-            break
-    
-
 
 def temp_Monitor():
 

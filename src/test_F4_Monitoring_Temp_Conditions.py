@@ -1,13 +1,6 @@
 import F4_Monitoring_Temp_Conditions as f4
 import variables as g
 
-'''def test_tempGet():
-    f4.g.temp=0
-    
-    f4.tempGet(tester=1)
-
-    assert f4.g.temp>0'''
-
 def test_temp_Monitor_email20():
     f4.g.temp=21
     f4.g.check20=0
