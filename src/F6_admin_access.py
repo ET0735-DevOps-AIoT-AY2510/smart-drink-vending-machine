@@ -36,6 +36,7 @@ def main(ir_pytest=None):
             g.security_prompt = False
             g.f6_test_flag_1 = True
     timeout()
+    g.last_key_time = time.time()
     g.BurglarState = False
     g.out_of_order = False
     g.waiting_for_payment = False
