@@ -14,12 +14,13 @@ def main():
 def tempGet():  # constantly gets temp through thread in main
     while True:
         time.sleep(10)
-        g.temp, _ = temp_humid.read_temp_humidity()
+        g.temp = 10  # temp value for testing
+        # g.temp, _ = temp_humid.read_temp_humidity()
 
 
 def temp_Monitor():
 
-    if g.temp >= 20 and g.check20 == 0:  # emails staff, blinks led at 2 Hz
+    if g.temp > 20 and g.check20 == 0:  # emails staff, blinks led at 2 Hz
         g.send_email(
             receiver_email='terencetngkc2007@gmail.com',
             subject='Irregular Temperature in Vending Machine',
@@ -29,7 +30,7 @@ def temp_Monitor():
         g.check20 = 1
         g.check10 = 1
 
-    elif g.temp >= 10 and g.check10 == 0:  # only emails staff
+    elif g.temp > 10 and g.check10 == 0:  # only emails staff
         g.send_email(
             receiver_email='terencetngkc2007@gmail.com',
             subject='Irregular Temperature in Vending Machine',

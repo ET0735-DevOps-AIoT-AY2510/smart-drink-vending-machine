@@ -1,3 +1,5 @@
+from PIL import Image
+import os
 from hal import hal_ir_sensor as ir_sensor
 from hal import hal_servo as servo
 from picamera2 import Picamera2, Preview
@@ -21,7 +23,7 @@ def main(pytest=None):
             if pytest is None:
                 camera_thread.start()
 
-            while not g.BurglarState and not ir_sensor.get_ir_sensor_state() and (pytest is None or pytest == 1):
+            while (not g.BurglarState and not ir_sensor.get_ir_sensor_state() and (pytest is None or pytest == 1)) or camera_thread.is_alive():
                 # So that it does not keep sending emails and continuously locks the door
                 servo.set_servo_position(0)
                 time.sleep(0.1)
@@ -52,13 +54,27 @@ def main(pytest=None):
 
 
 def camerafeature():
-    g.picam2.capture_file("idk.jpg")
+    original_path = "burglar_original.jpg"
+    resized_path = "burglar.jpg"
+
+    g.picam2.capture_file(original_path)
+
+    # Resize and compress the captured image
+    resize_and_compress_image(original_path, resized_path)
+
     g.send_email(
         receiver_email='terencetngkc2007@gmail.com',
         subject='Image of Burglar',
         body_text='Burglar Detected.',
-        image_path='idk.jpg'
+        image_path=resized_path
     )
+
+
+def resize_and_compress_image(input_path, output_path, max_size=(800, 600), quality=70):
+    """Resize and compress the image to reduce file size."""
+    with Image.open(input_path) as img:
+        img.thumbnail(max_size)  # Resize while maintaining aspect ratio
+        img.save(output_path, format='JPEG', quality=quality, optimize=True)
 
 
 if __name__ == '__main__':

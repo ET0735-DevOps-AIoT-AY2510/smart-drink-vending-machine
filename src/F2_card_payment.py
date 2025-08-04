@@ -33,14 +33,14 @@ def rfid_input(tester=None):
                 g.card_data_string = str(card_data)
                 break
     elif tester == 1:
-        g.card_data_string = "437194800967"
+        g.card_data_string = "765343767958"
     elif tester == 0:
         g.card_data_string = "1"
 
     if g.card_data_string != 0:  # check if card was tapped
         g.last_key_time = time.time()  # update time to when card is tapped
 
-        accepted_card_data = ["437194800967", "765343767958"]  # card id
+        accepted_card_data = ["765343767958"]  # card id
         print(g.card_data_string)
         if g.card_data_string in accepted_card_data:  # accepted card
             g.card_declined = False

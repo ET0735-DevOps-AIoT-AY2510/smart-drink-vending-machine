@@ -28,16 +28,6 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 
 
 def main():
-    dc.init()
-    buzzer.init()
-    led.init()
-    temp_humid.init()
-    moistSens.init()
-    ir_sensor.init()
-    servo.init()
-    keypad.init(g.key_pressed)
-    us.init()
-
     lcd_print_thread = Thread(target=display.lcd_print, daemon=True)
     lcd_print_thread.start()
     keypad_thread = Thread(target=keypad.get_key,
@@ -47,7 +37,7 @@ def main():
     inactivity_thread.start()
     f4.main()
     f8_main_thread = Thread(target=f8.main)
-    # f8_main_thread.start()
+    f8_main_thread.start()
     f9.main()
     main_menu_thread = Thread(target=keypad_press_lcd_display)
     main_menu_thread.start()
@@ -121,7 +111,7 @@ def keypad_press_lcd_display():
 
             continue
 
-        if len(g.storeSelection) > 5:  # entered number is greater than admin code
+        if len(g.storeSelection) >= 5:  # entered number is greater than admin code
             g.lcd_queue.put("clear")
             g.lcd_queue.put(("Invalid number,", 1))
             g.lcd_queue.put(("please retry", 2))
@@ -208,7 +198,7 @@ def keypad_press_lcd_display():
                     g.shared_keypad_queue.put("*")
 
         else:
-            if len(g.storeSelection) < 6:
+            if len(g.storeSelection) < 5:
                 g.lcd_queue.put("clear")
                 # stores most recent key press into array
                 g.storeSelection.append(keyvalue)

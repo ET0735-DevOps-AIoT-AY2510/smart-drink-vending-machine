@@ -1,7 +1,14 @@
 import sys
 from hal import hal_lcd as LCD
-from hal import hal_buzzer as buzzer
+from hal import hal_keypad as keypad
+from hal import hal_dc_motor as dc
 from hal import hal_led as led
+from hal import hal_temp_humidity_sensor as temp_humid
+from hal import hal_moisture_sensor as moistSens
+from hal import hal_ir_sensor as ir_sensor
+from hal import hal_servo as servo
+from hal import hal_buzzer as buzzer
+from hal import hal_usonic as us
 from threading import Thread, Event
 import time
 import queue
@@ -14,11 +21,10 @@ from picamera2 import Picamera2, Preview
 picam2 = Picamera2()
 camera_config = picam2.create_still_configuration(
     main={"size": (4056, 3040)},
-    lores={"size": (640, 480)},
+    lores={"size": (320, 240)},
     display="lores"
 )
 picam2.configure(camera_config)
-picam2.start_preview(Preview.QTGL)
 picam2.start()
 
 escape = False
@@ -139,3 +145,14 @@ def send_email(receiver_email, subject, body_text, image_path=None):
         print("Email sent.")
     except Exception as e:
         print(f"Failed to send email: {e}")
+
+
+dc.init()
+buzzer.init()
+led.init()
+temp_humid.init()
+moistSens.init()
+ir_sensor.init()
+servo.init()
+keypad.init(key_pressed)
+us.init()

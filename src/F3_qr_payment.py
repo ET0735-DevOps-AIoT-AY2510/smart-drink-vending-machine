@@ -60,9 +60,11 @@ def camera_input():
             code_data = None
         if code_data == "Payment Success":
             g.qr_declined = False
+            buzzer.beep(0.5, 0, 1)
             break
         elif code_data != None:
             g.lcd_queue.put("clear")
+            buzzer.beep(1, 1, 1)
             g.lcd_queue.put(("Invalid Code", 1))
             g.lcd_queue.put(("please try again", 2))
             time.sleep(3)

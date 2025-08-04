@@ -1,5 +1,4 @@
 import F7_monitoring_stocks as f7
-from hal import hal_usonic as us
 import variables as g
 
 
