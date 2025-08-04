@@ -11,32 +11,37 @@ from pathlib import Path
 import variables as g
 
 
-def main():
-    while True:
+def main(pytest=None):
+    while pytest is None or pytest == 1:
         if not g.BurglarState and not ir_sensor.get_ir_sensor_state():
-            '''security_thread = Thread(target=g.stillthere_func, daemon=True)
-            security_thread.start()'''
-            '''locking_thread = Thread(target=forcedlock)
-            locking_thread.start()'''
             g.stillthere_event.set()
             security_thread = Thread(target=g.stillthere_func)
             security_thread.start()
             camera_thread = Thread(target=camerafeature)
-            camera_thread.start()
+            if pytest is None:
+                camera_thread.start()
 
-            while not g.BurglarState and not ir_sensor.get_ir_sensor_state():
-                # So that it does not keep sending emails
+            while not g.BurglarState and not ir_sensor.get_ir_sensor_state() and (pytest is None or pytest == 1):
+                # So that it does not keep sending emails and continuously locks the door
                 servo.set_servo_position(0)
                 time.sleep(0.1)
+                g.f8_test_flag_1 = True
+                if pytest is not None:
+                    pytest += 1
+                    time.sleep(3)
         try:
             if not g.BurglarState and ir_sensor.get_ir_sensor_state() and security_thread.is_alive():
+                g.f8_test_flag_2 = True
                 if not camera_thread.is_alive():
                     g.stillthere_event.clear()
                     security_thread.join()
+                    g.f8_test_flag_2 = True
         except NameError:
             # security_thread does not exist yet
             pass
         time.sleep(1)
+        if pytest is not None:
+            pytest += 1
 
 
 '''def forcedlock():
