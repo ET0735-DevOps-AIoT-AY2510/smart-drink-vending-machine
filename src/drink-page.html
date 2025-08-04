@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="utf-8"> 
+        <title>Drink Page</title>
+        <link rel="stylesheet" href="drink-page.css">
+        <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Order Drink</h1>
+        <button class="inbox-btn" onclick="location.href='inbox.html'">Inbox</button>
+        </div>
+        <hr>
+        
+        <div class="drink-item">
+            <img src="images/coca_cola.png" alt="Drink 1" class="drink-image">
+            <div class="drink-info">
+                <h2>Coca Cola</h2>
+                <p><span class="price">$1.30</span></p>
+                <button class="purchase-btn" onclick="location.href='payment.html?drink=coca_cola.png&price=1.30'">Purchase</button>
+            </div>
+        </div>
+        <hr>
+        
+        <div class="drink-item">
+            <img src="images/lemon_tea.png" alt="Drink 2" class="drink-image">
+            <div class="drink-info">
+                <h2>Ice Lemon Tea</h2>
+                <p><span class="price">$1.50</span></p>
+                <button class="purchase-btn" onclick="location.href='payment.html?drink=lemon_tea.png&price=1.50'">Purchase</button>
+            </div>
+        </div>
+        <hr>
+        
+        <div class="drink-item">
+            <img src="images/green_tea.png" alt="Drink 3" class="drink-image">
+            <div class="drink-info">
+                <h2>Green Tea</h2>
+                <p><span class="price">$1.10</span></p>
+                <button class="purchase-btn" onclick="location.href='payment.html?drink=green_tea.png&price=1.10'">Purchase</button>
+            </div>
+        </div>
+        <hr>
+        
+        <div class="drink-item">
+            <img src="images/fanta.png" alt="Drink 4" class="drink-image">
+            <div class="drink-info">
+                <h2>Fanta Grape</h2>
+                <p><span class="price">$1.30</span></p>
+                <button class="purchase-btn" disabled>Unavailable</button>
+            </div>
+        </div>
+        <hr>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

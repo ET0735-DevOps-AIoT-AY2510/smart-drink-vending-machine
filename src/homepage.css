@@ -1,0 +1,88 @@
+
+    /* Resets and base styles */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Montserrat', sans-serif;
+    }
+    
+    body {
+        background-color: #ffffff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+    }
+    
+    /* Container styling */
+    .auth-container {
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        padding: 30px;
+        width: 100%;
+        max-width: 400px;
+        text-align: center;
+    }
+    
+    /* Header styling */
+    .auth-header h2 {
+        color: #333;
+        margin-bottom:50px;
+        font-size: 1.8rem;
+        font-weight: 1000;
+        text-align: left;
+    }
+    
+    /* Button styling */
+    .auth-btn {
+        width: 100%;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-bottom: 40px;
+        display: block;
+        transition: all 0.3s ease;
+    }
+    
+    .signup-btn {
+        background-color: #000000;
+        color: white;
+    }
+    
+    .signup-btn:hover {
+        background-color: #000000;
+    }
+    
+    .login-btn {
+        background-color: #ffffff;
+        color: rgb(0, 0, 0);
+        border: 1.5px solid #000000; 
+        border-radius: 5px; 
+        padding: 10px 20px; 
+    }
+
+    .button-label{
+        font-weight: 550;
+        text-align: left;
+    }
+
+    .login-btn:hover {
+        background-color: #ffffff;
+    }
+    
+    /* Small devices responsiveness */
+    @media (max-width: 480px) {
+        .auth-container {
+            padding: 20px;
+        }
+        
+        .auth-header h2 {
+            font-size: 1.3rem;
+        }
+    }
