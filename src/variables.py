@@ -1,4 +1,3 @@
-import sys
 from hal import hal_lcd as LCD
 from hal import hal_buzzer as buzzer
 from hal import hal_led as led
@@ -26,18 +25,12 @@ qr_declined = True
 card_declined = True
 selection = 0
 
-f6_test_flag_1 = None
-f6_test_flag_2 = None
-f6_test_flag_3 = None
-f8_test_flag_1 = None
-f8_test_flag_2 = None
-
 stillthere = True
 LCD = LCD.lcd()
 elapsed = time.time()
 security_prompt = True
 stillthere_event = Event()
-BurglarState = False  # False means F8 is active
+BurglarState = False
 
 drink_database = {
     1: {"name": "Coke", "price": "1.50", "stock": 4},
@@ -87,10 +80,7 @@ def ledBlink():
 
 def stillthere_func():
     while stillthere_event.is_set():  # run while event is set
-        if 'pytest' not in sys.modules:
-            buzzer.beep(0.5, 1, 1)
-        else:
-            time.sleep(1)
+        buzzer.beep(0.5, 1, 1)
 
 
 def key_pressed(key):  # puts key into queue
