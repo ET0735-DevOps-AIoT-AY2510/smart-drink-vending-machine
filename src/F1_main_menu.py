@@ -18,15 +18,13 @@ def main():
     keypad_press_lcd_display()
 
 
-def inactivity_check(tester=None):
+def inactivity_check():
     while True:
         if time.time() - g.last_key_time > 15 and g.BurglarState == False:
             homescreen()
             g.last_key_time = time.time()
             g.waiting_for_payment = False  # reset to avoid repeated homescreen calls
         time.sleep(1)  # prevent lag?
-        if tester is not None:
-            break
 
 
 def homescreen():
@@ -42,11 +40,10 @@ def homescreen():
         g.lcd_queue.put(("select a drink", 2))
 
 
-def keypad_press_lcd_display(tester=None):
-    while True and (tester == None or tester == 1):
-        if tester is not None:
-            tester = 2
-            
+def keypad_press_lcd_display():
+    g.waiting_for_payment = False
+    g.storeSelection = []
+    while True:
         key = g.shared_keypad_queue.get()  # gets key from queue
         keyvalue = str(key)  # convert key int to key string
 
@@ -73,6 +70,7 @@ def keypad_press_lcd_display(tester=None):
                 # put qr code payment here
                 homescreen()
                 g.waiting_for_payment = False
+
             continue
 
         if len(g.storeSelection) > 5:  # entered number is greater than admin code
