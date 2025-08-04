@@ -9,30 +9,32 @@ from hal import hal_keypad as keypad
 import variables as g
 
 
-def main():
-    g.out_of_order = True
-    g.BurglarState = True
-    g.stillthere = True
-    g.security_prompt = True
-    g.waiting_for_payment = True  # So that the other LED functions are disabled
-    time.sleep(3)
-    '''keypad.init(key_pressed)
-    keypad_thread = Thread(target=keypad.get_key, daemon=True)
-    keypad_thread.start()'''
+def main(ir_pytest=None):
+    if ir_pytest is None:
+        g.out_of_order = True
+        g.BurglarState = True
+        g.stillthere = True
+        g.security_prompt = True
+        g.waiting_for_payment = True  # So that the other LED functions are disabled
+        time.sleep(3)
+
     security_thread = Thread(target=g.stillthere_func)
-    security_thread.start()
-    g.elapsed = time.time()
+    if ir_pytest is None:
+        g.elapsed = time.time()
     while time.time() - g.elapsed <= 10 and not ir_sensor.get_ir_sensor_state():
         if (time.time() - g.elapsed >= 5):
             if not g.security_prompt:
                 g.stillthere_event.set()
-                security_thread = Thread(target=g.stillthere_func)
-                security_thread.start()
+                if ir_pytest is None:
+                    security_thread = Thread(target=g.stillthere_func)
+                    security_thread.start()
             security_check()
             g.security_prompt = True
+            g.f6_test_flag_2 = True
         elif g.security_prompt and g.stillthere:
             unlock_door(security_thread)
             g.security_prompt = False
+            g.f6_test_flag_1 = True
     timeout()
     g.last_key_time = time.time()
     g.BurglarState = False
@@ -41,6 +43,7 @@ def main():
     g.emailCheckLeak = 0
     g.check10 = 0
     g.check20 = 0
+    g.f6_test_flag_3 = True
     if security_thread.is_alive():
         security_thread.join()
 

@@ -30,7 +30,7 @@ def camera_input():
         img = cv2.imread(image_path)
 
         try:
-            if img is None:
+            if img is None:  # For debugging
                 print(f"Image not found: {image_path}")
             else:
                 img = resize_for_speed(img, max_dim=640)
