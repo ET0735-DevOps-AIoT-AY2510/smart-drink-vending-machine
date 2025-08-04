@@ -12,20 +12,26 @@ from pathlib import Path
 from picamera2 import Picamera2, Preview
 
 picam2 = Picamera2()
-camera_config = picam2.create_still_configuration(main={"size": (4056,
-                                                                 3040)}, lores={"size": (640, 480)}, display="lores")
+camera_config = picam2.create_still_configuration(
+    main={"size": (4056, 3040)},
+    lores={"size": (640, 480)},
+    display="lores"
+)
 picam2.configure(camera_config)
 picam2.start_preview(Preview.QTGL)
 picam2.start()
+
 escape = False
 qr_declined = True
 card_declined = True
 selection = 0
+
 f6_test_flag_1 = None
 f6_test_flag_2 = None
 f6_test_flag_3 = None
 f8_test_flag_1 = None
 f8_test_flag_2 = None
+
 stillthere = True
 LCD = LCD.lcd()
 elapsed = time.time()

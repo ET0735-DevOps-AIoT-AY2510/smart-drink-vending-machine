@@ -16,6 +16,7 @@ def tempGet():  # constantly gets temp through thread in main
         time.sleep(10)
         g.temp, _ = temp_humid.read_temp_humidity()
 
+
 def temp_Monitor():
 
     if g.temp >= 20 and g.check20 == 0:  # emails staff, blinks led at 2 Hz
