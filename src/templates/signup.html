@@ -5,23 +5,26 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta charset="utf-8"> 
         <title>Signup Page</title>
-        <link rel="stylesheet" href="signup.css">
+        <link rel="stylesheet" href="{{ url_for('static', filename='signup.css') }}">
         <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
     </head>
 
     <body>
 
-<form id="signupForm" class="box" onsubmit="return validatePassword()"> 
-    <a href="homepage.html" class="return-button"> ← Return</a>
-    <img src="images/vending-machine.png" alt="Vending Machine Logo" class="logo">
+<form id="signupForm" class="box" onsubmit="return validatePassword()" method="POST" action="{{ url_for('signup') }}"> 
+    <a href="{{ url_for('homepage') }}" class="return-button"> ← Return</a>
+    <img src="{{ url_for('static', filename='images/vending-machine.png') }}" alt="Vending Machine Logo" class="logo">
     <h1>Drink Vending Machine</h1>
-    <input type="text" class="input-field" placeholder="Username" required>
-    <input type="password" id="password" class="input-field" placeholder="Password" required>
-    <input type="password" id="confirm-password" class="input-field" placeholder="Confirm Password" required>
+    <input type="text" class="input-field" name="username" placeholder="Username" required>
+    <input type="password" id="password" class="input-field" name="password" placeholder="Password" required>
+    <input type="password" id="confirm-password" class="input-field" name="confirm_password" placeholder="Confirm Password" required>
 <label class="show-password-label">
   <input type="checkbox" onclick="togglePassword()"> Show Password
 </label>
     <p id="error-message" style="color: red; font-size: 14px;"></p>
+    {% if error %}
+    <p style="color: red;">{{ error }}</p>
+    {% endif %}
     <button type="submit" class="submit-btn">Create Account</button>
 </form>
 
@@ -57,8 +60,8 @@
                 event.preventDefault();
                 return;
             }
-            event.preventDefault();
-            window.location.href = 'drink-page.html';
+            // The form will now submit to the Flask route
+            this.submit();
         });
 </script>
     </body>

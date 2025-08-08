@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="utf-8"> 
+        <title>Inbox</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='inbox.css') }}">
+        <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Uncollected</h1>
+        </div>
+        <hr>
+        <a href="{{ url_for('drink_page') }}" class="return-button"> ← Return</a>
+        {% for order in orders %}
+        <div class="drink-item">
+            <img src="{{ url_for('static', filename=order['image_url']) }}" alt="{{ order['name'] }}" class="drink-image">
+            <div class="drink-info">
+                <h2>{{ order['name'] }}</h2>
+        <a href="{{ url_for('collection_page', barcode=order['collection_barcode']) }}" class="purchase-btn">Collect</a>
+            </div>
+        </div>
+        <hr>
+        {% else %}
+        <p>No uncollected drinks.</p>
+        {% endfor %}
+        
+    </div>
+
+    
+</body>
+</html>

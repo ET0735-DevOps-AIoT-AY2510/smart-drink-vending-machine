@@ -4,13 +4,14 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta charset="utf-8"> 
         <title>Homepage</title>
-        <link rel="stylesheet" href="homepage.css">
+        <link rel="stylesheet" href="{{ url_for('static', filename='homepage.css') }}">
         <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
 </head>
 <body>
     <div class="auth-container">
         <div class="auth-header">
             <h2>Welcome to the drink vending machine!</h2>
+            <button id="adminLoginBtn" class="admin-login-btn" onclick="location.href='{{ url_for('admin_login') }}'">Admin Login</button>
         </div>
 
         <div class="auth-buttons">
@@ -23,20 +24,17 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            //get buttons
             const signupBtn = document.getElementById('signupBtn');
             const loginBtn = document.getElementById('loginBtn');
             
-        signupBtn.addEventListener('click', function() {
-        window.location.href = 'signup.html'; 
-        });
+            signupBtn.addEventListener('click', function() {
+                window.location.href = '{{ url_for('signup') }}'; 
+            });
 
-        loginBtn.addEventListener('click', function() {
-        window.location.href = 'login.html'; 
-        });
+            loginBtn.addEventListener('click', function() {
+                window.location.href = '{{ url_for('login') }}'; 
+            });
 
-            
-            // Hover effects
             const buttons = document.querySelectorAll('.auth-btn');
             buttons.forEach(button => {
                 button.addEventListener('mouseenter', function() {

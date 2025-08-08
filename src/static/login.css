@@ -88,6 +88,28 @@ body {
   cursor: pointer;
 }
 
+/* Admin Login Page Specific Styles */
+body.admin-login-page {
+    background-color: #e0f7fa; /* Lighter blue background */
+}
+
+body.admin-login-page .box {
+    border: 2px solid #00796b; /* Darker border */
+    box-shadow: 0 6px 15px rgba(0, 121, 107, 0.2); /* More prominent shadow */
+}
+
+body.admin-login-page .box h1 {
+    color: #004d40; /* Darker heading color */
+}
+
+body.admin-login-page .submit-btn {
+    background: #00796b; /* Greenish submit button */
+}
+
+body.admin-login-page .submit-btn:hover {
+    background: #004d40;
+}
+
 @media (max-height: 500px) {
     .box {
         position: static;
@@ -95,4 +117,3 @@ body {
         margin-top: 20px;
     }
 }
-

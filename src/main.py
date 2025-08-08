@@ -1,187 +1,203 @@
-import time
-from threading import Thread
-import queue
+from flask import Flask, render_template, request, redirect, url_for, jsonify, session
+import sqlite3
+import bcrypt
+import barcode
+from barcode.writer import ImageWriter
 
-from hal import hal_led as led
-from hal import hal_lcd as LCD
-from hal import hal_adc as adc
-from hal import hal_buzzer as buzzer
-from hal import hal_keypad as keypad
-from hal import hal_moisture_sensor as moisture_sensor
-from hal import hal_input_switch as input_switch
-from hal import hal_ir_sensor as ir_sensor
-from hal import hal_rfid_reader as rfid_reader
-from hal import hal_servo as servo
-from hal import hal_temp_humidity_sensor as temp_humid_sensor
-from hal import hal_usonic as usonic
-from hal import hal_dc_motor as dc_motor
-from hal import hal_accelerometer as accel
+app = Flask(__name__, static_folder='static', template_folder='templates')
+app.secret_key = 'your_secret_key' # Replace with a strong secret key
 
-#Empty list to store sequence of keypad presses
-shared_keypad_queue = queue.Queue()
+#  helper function to get db connection
+def get_db_connection():
+    conn = sqlite3.connect('vending_machine.db')
+    conn.row_factory = sqlite3.Row
+    return conn
 
+@app.route('/')
+def homepage():
+    return render_template('homepage.html')
 
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password'].encode('utf-8')
 
+        conn = get_db_connection()
+        user = conn.execute('SELECT * FROM Users WHERE username = ?', (username,)).fetchone()
+        conn.close()
 
-#Call back function invoked when any key on keypad is pressed
-def key_pressed(key):
-    shared_keypad_queue.put(key)
+        if user and bcrypt.checkpw(password, user['password_hash']):
+            session['user_id'] = user['user_id']
+            # Check if the logged-in user is the Admin
+            if username == 'Admin':
+                session['is_admin'] = True
+                return redirect(url_for('admin_dashboard'))
+            else:
+                session['is_admin'] = False
+                return redirect(url_for('drink_page'))
+        else:
+            # Check if the login attempt was for Admin
+            if request.path == url_for('admin_login'):
+                return render_template('login.html', error='Invalid Admin username or password', is_admin_login=True)
+            else:
+                return render_template('login.html', error='Invalid username or password')
+    return render_template('login.html')
 
+@app.route('/admin_login', methods=['GET', 'POST'])
+def admin_login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password'].encode('utf-8')
 
-def main():
-    #initialization of HAL modules
-    led.init()
-    adc.init()
-    buzzer.init()
-  
-    moisture_sensor.init()
-    input_switch.init()
-    ir_sensor.init()
-    reader = rfid_reader.init()
-    servo.init()
-    temp_humid_sensor.init()
-    usonic.init()
-    dc_motor.init()
-    accelerometer = accel.init()
+        conn = get_db_connection()
+        user = conn.execute('SELECT * FROM Users WHERE username = ?', (username,)).fetchone()
+        conn.close()
 
-    keypad.init(key_pressed)
-    keypad_thread = Thread(target=keypad.get_key)
-    keypad_thread.start()
+        if user and bcrypt.checkpw(password, user['password_hash']):
+            session['user_id'] = user['user_id']
+            if username == 'Admin':
+                session['is_admin'] = True
+                return redirect(url_for('admin_dashboard'))
+            else:
+                # Should not happen if only Admin logs in via this route
+                return render_template('login.html', error='Access Denied', is_admin_login=True)
+        else:
+            return render_template('login.html', error='Invalid Admin username or password', is_admin_login=True)
+    return render_template('login.html', is_admin_login=True)
 
-    lcd = LCD.lcd()
-    lcd.lcd_clear()
+@app.route('/admin_dashboard')
+def admin_dashboard():
+    if 'user_id' not in session or not session.get('is_admin'):
+        return redirect(url_for('admin_login'))
 
-    lcd.lcd_display_string("Mini-Project", 1)
-    lcd.lcd_display_string("Dignostic Tests", 2)
+    admin_barcode_data = '12345'
+    # Generate barcode image
+    EAN = barcode.get_barcode_class('code128')
+    ean = EAN(admin_barcode_data, writer=ImageWriter())
+    barcode_filepath = f'static/barcodes/{admin_barcode_data}'
+    ean.save(f'src/{barcode_filepath}')
 
-    time.sleep(3)
+    conn = get_db_connection()
+    drinks = conn.execute('SELECT * FROM Drinks').fetchall()
+    conn.close()
 
-    print("press 0 to test accelerometer")
-    print("press 1 to test LED")
-    print("press 2 to test potentiometer")
-    print("press 3 to test buzzer")
-    print("press 4 to test moizture sensor")
-    print("press 5 to test ultrasonic sensor")  
-    print("press 6 to test rfid reader") 
-    print("press 7 to test LDR") 
-    print("press 8 to test servo & DC motor") 
-    print("press 9 to test temp & humidity")   
-    print("press # to test slide switch")  
-    print("print * to test IR sensor")
+    return render_template('admin_dashboard.html', barcode_number=admin_barcode_data, drinks=drinks)
 
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password'].encode('utf-8')
+        hashed_password = bcrypt.hashpw(password, bcrypt.gensalt())
 
-    while(True):
-        lcd.lcd_clear()
-        lcd.lcd_display_string("press any key!", 1)
-     
+        conn = get_db_connection()
+        try:
+            conn.execute('INSERT INTO Users (username, password_hash) VALUES (?, ?)', (username, hashed_password))
+            conn.commit()
+            return redirect(url_for('login'))
+        except sqlite3.IntegrityError:
+            return render_template('signup.html', error='Username already exists')
+        finally:
+            conn.close()
+    return render_template('signup.html')
 
-        print("wait for key")
-        keyvalue= shared_keypad_queue.get()
+@app.route('/drinks')
+def drink_page():
+    conn = get_db_connection()
+    drinks = conn.execute('SELECT * FROM Drinks').fetchall()
+    conn.close()
+    return render_template('drink-page.html', drinks=drinks)
 
-        print("key value ", keyvalue)
+@app.route('/payment/<int:drink_id>')
+def payment(drink_id):
+    conn = get_db_connection()
+    drink = conn.execute('SELECT * FROM Drinks WHERE drink_id = ?', (drink_id,)).fetchone()
+    conn.close()
+    if drink:
+        return render_template('payment.html', drink=drink)
+    else:
+        return redirect(url_for('drink_page')) # Redirect if drink not found
+
+@app.route('/process_payment', methods=['POST'])
+def process_payment():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    drink_id = request.form['drink_id']
+    user_id = session['user_id']
+
+    conn = get_db_connection()
+    drink = conn.execute('SELECT * FROM Drinks WHERE drink_id = ?', (drink_id,)).fetchone()
+
+    if drink and drink['stock_quantity'] > 0:
+        # Simulate payment success and generate barcode
+        import random
+        collection_barcode = ''.join(random.choices('0123456789', k=8)) # Simple 8-digit barcode
         
+        # Generate barcode image
+        EAN = barcode.get_barcode_class('code128')
+        ean = EAN(collection_barcode, writer=ImageWriter())
+        barcode_filepath = f'static/barcodes/{collection_barcode}'
+        ean.save(f'src/{barcode_filepath}')
 
-        if(keyvalue == 1): 
-            lcd.lcd_display_string("key pressed "  +str(keyvalue), 1)
-            lcd.lcd_display_string("LED TEST ", 2)
-            led.set_output(1, 1)
-            time.sleep(2)
-            led.set_output(1, 0)
-            time.sleep(2)
+        try:
+            conn.execute('UPDATE Drinks SET stock_quantity = stock_quantity - 1 WHERE drink_id = ?', (drink_id,))
+            conn.execute('INSERT INTO Orders (user_id, drink_id, order_status, collection_barcode) VALUES (?, ?, ?, ?)', 
+                         (user_id, drink_id, 'paid', collection_barcode))
+            conn.commit()
+            conn.close()
+            return redirect(url_for('collection_page', barcode=collection_barcode))
+        except Exception as e:
+            conn.rollback()
+            conn.close()
+            return jsonify({'status': 'error', 'message': str(e)}), 500
+    else:
+        conn.close()
+        return jsonify({'status': 'error', 'message': 'Drink not available or out of stock'}), 400
 
-        elif (keyvalue == 2):
-            pot_val = adc.get_adc_value(1)
-            lcd.lcd_display_string("key pressed "  +str(keyvalue), 1)
-            lcd.lcd_display_string("potval " +str(pot_val), 2)
-            time.sleep(2)
+@app.route('/collection_page')
+def collection_page():
+    barcode = request.args.get('barcode')
+    return render_template('collection.html', barcode=barcode)
 
-        elif (keyvalue == 3):
-            lcd.lcd_display_string("key pressed "  +str(keyvalue), 1)
-            lcd.lcd_display_string("Buzzer TEST ", 2)
-            buzzer.beep(0.5, 0.5, 1)
+@app.route('/inbox')
+def inbox():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
 
-        elif (keyvalue == 4):
-            lcd.lcd_display_string("key pressed "  +str(keyvalue), 1)
-            sensor_val = moisture_sensor.read_sensor()
-            lcd.lcd_display_string("moisture " +str(sensor_val), 2)
-            time.sleep(2)
+    user_id = session['user_id']
+    conn = get_db_connection()
+    uncollected_orders = conn.execute('''
+        SELECT o.order_id, d.name, d.image_url, o.collection_barcode
+        FROM Orders o
+        JOIN Drinks d ON o.drink_id = d.drink_id
+        WHERE o.user_id = ? AND o.order_status = ?
+    ''', (user_id, 'paid')).fetchall()
+    conn.close()
+    return render_template('inbox.html', orders=uncollected_orders)
 
-        elif (keyvalue == 5):
-            lcd.lcd_display_string("key pressed "  +str(keyvalue), 1)            
-            sensor_val = usonic.get_distance()
-            lcd.lcd_display_string("distance " +str(sensor_val), 2)
-            time.sleep(2)   
+@app.route('/collect_drink/<int:order_id>', methods=['POST'])
+def collect_drink(order_id):
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
 
-        elif (keyvalue == 6):
-            lcd.lcd_display_string("key pressed "  +str(keyvalue), 1)           
-            id = reader.read_id_no_block()
-            id = str(id)
-        
-            if id != "None":
-                print("RFID card ID = " + id)
-                # Display RFID card ID on LCD line 2
-                lcd.lcd_display_string(id, 2) 
-            time.sleep(2)   
+    conn = get_db_connection()
+    try:
+        conn.execute('UPDATE Orders SET order_status = ? WHERE order_id = ? AND user_id = ?', 
+                     ('collected', order_id, session['user_id']))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('inbox'))
+    except Exception as e:
+        conn.rollback()
+        conn.close()
+        return jsonify({'status': 'error', 'message': str(e)}), 500
 
-        elif (keyvalue == 7):
-            lcd.lcd_display_string("key pressed "  +str(keyvalue), 1)            
-            pot_val = adc.get_adc_value(0)
-            lcd.lcd_display_string("LDR " +str(pot_val), 2)
-            time.sleep(2)
-
-        elif (keyvalue == 8):
-            lcd.lcd_display_string("key pressed "  +str(keyvalue), 1)     
-            lcd.lcd_display_string("servo/DC test ", 2)  
-            servo.set_servo_position(20)
-            time.sleep(1)  
-            servo.set_servo_position(80)
-            time.sleep(1)     
-            servo.set_servo_position(120)
-            time.sleep(1)            
-            dc_motor.set_motor_speed(50)
-            time.sleep(4)   
-            dc_motor.set_motor_speed(0)
-            time.sleep(2) 
-
-        elif (keyvalue == 9):
-            temperature, humidity = temp_humid_sensor.read_temp_humidity()
-            lcd.lcd_display_string("Temperature "  +str(temperature), 1)  
-            lcd.lcd_display_string("Humidity "  +str(humidity), 2) 
-            time.sleep(2)  
-
-        elif (keyvalue == "#"):
-            sw_switch = input_switch.read_slide_switch()
-            lcd.lcd_display_string("key pressed "  +str(keyvalue), 1)    
-            lcd.lcd_display_string("switch "  +str(sw_switch), 2) 
-            time.sleep(2)  
-        
-        elif (keyvalue == "*"):
-            ir_value = ir_sensor.get_ir_sensor_state()
-            lcd.lcd_display_string("key pressed "  +str(keyvalue), 1)    
-            lcd.lcd_display_string("ir sensor "  +str(ir_value), 2) 
-            time.sleep(2)  
-        
-        elif (keyvalue == 0):
-            x_axis, y_axis, z_axis = accelerometer.get_3_axis_adjusted()
-            lcd.lcd_display_string("key pressed "  +str(keyvalue), 1) 
-            lcd.lcd_display_string("x " +str(x_axis), 2) 
-            time.sleep(2) 
-            lcd.lcd_clear()
-            lcd.lcd_display_string("y " +str(y_axis), 1) 
-            lcd.lcd_display_string("z " +str(z_axis), 2) 
-            print(x_axis)
-            print(y_axis)
-            print(z_axis)  
-
-            time.sleep(2)  
-       
-
-
-        time.sleep(1)
-
-
-
-
+@app.route('/logout')
+def logout():
+    session.pop('user_id', None)
+    return redirect(url_for('homepage'))
 
 if __name__ == '__main__':
-    main()
+    app.run(debug=True)

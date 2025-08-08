@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="utf-8"> 
+        <title>Payment Page</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='payment.css') }}">
+        <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Payment</h1>
+    </header>
+            <hr>
+    <a href="{{ url_for('drink_page') }}" class="return-button"> ← Return</a>
+    <main>
+      <div class="drink-image">
+        <img src="{{ url_for('static', filename=drink['image_url']) }}" alt="{{ drink['name'] }}" class="drink-image" id="drink-image">
+      </div>
+      <div class="details">
+        <p class="selected-item">You have selected: <strong id="drink-name">{{ drink['name'] }}</strong></p>
+        <p class="total">Your total is: <strong id="drink-price">${{ "%.2f"|format(drink['price']) }}</strong></p>
+        <form action="{{ url_for('process_payment') }}" method="POST">
+            <input type="hidden" name="drink_id" value="{{ drink['drink_id'] }}">
+            <button type="submit" class="pay-button">Make payment</button>
+        </form>
+      </div>
+    </main>
+  </div>
+
+  
+</body>
+</html>

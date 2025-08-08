@@ -4,7 +4,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta charset="utf-8"> 
         <title>Collection Page</title>
-        <link rel="stylesheet" href="collection.css">
+        <link rel="stylesheet" href="{{ url_for('static', filename='collection.css') }}">
         <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
 </head>
 <body>
@@ -15,16 +15,12 @@
             <hr>
         <p>Payment successful!</p>
         <div class="barcode"> 
-            <span>0123-4567</span>
+            <img src="{{ url_for('static', filename='barcodes/' + barcode + '.png') }}" alt="Barcode: {{ barcode }}">
         </div>
         <p>Flash this barcode at the vending machine camera to collect your drink!</p>
-        <button id="returnButton">Return</button>
+        <button id="returnButton" onclick="location.href='{{ url_for('drink_page') }}'">Return</button>
     </div>
 
-    <script>
-        document.getElementById('returnButton').addEventListener('click', function() {
-            window.location.href = 'drink-page.html';
-        });
-    </script>
+    
 </body>
 </html>

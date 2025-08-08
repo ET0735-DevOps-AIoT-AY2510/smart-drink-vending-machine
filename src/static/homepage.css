@@ -1,5 +1,4 @@
-
-    /* Resets and base styles */
+/* Resets and base styles */
     * {
         margin: 0;
         padding: 0;
@@ -25,15 +24,23 @@
         width: 100%;
         max-width: 400px;
         text-align: center;
+        position: relative; 
     }
     
     /* Header styling */
+    .auth-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start; /* Align items to the top */
+        margin-bottom: 50px;
+    }
+
     .auth-header h2 {
         color: #333;
-        margin-bottom:50px;
         font-size: 1.8rem;
         font-weight: 1000;
         text-align: left;
+        flex-grow: 1; /* Allows text to take available space */
     }
     
     /* Button styling */
@@ -76,6 +83,25 @@
         background-color: #ffffff;
     }
     
+    /* Admin Login Button - Styled like login-btn but green */
+    .admin-login-btn {
+        background-color: #4CAF50; /* Green color */
+        color: white;
+        border: 1.5px solid #4CAF50; 
+        border-radius: 5px; 
+        padding: 10px 20px; 
+        cursor: pointer;
+        font-size: 14px;
+        margin-left: auto; /* Pushes button to the right */
+        white-space: nowrap; /* Prevent text wrapping */
+        transition: all 0.3s ease;
+    }
+
+    .admin-login-btn:hover {
+        background-color: #45a049;
+        border-color: #45a049;
+    }
+
     /* Small devices responsiveness */
     @media (max-width: 480px) {
         .auth-container {

@@ -1,0 +1,104 @@
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.container {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 100%;
+    max-width: 500px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.header h1 {
+    font-size: 24px;
+    color: #333;
+}
+
+.logout-btn {
+    background-color: #dc3545; /* Red color for logout */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.barcode-display {
+    margin-top: 30px;
+}
+
+.barcode-number {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.barcode-image {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid #eee;
+    padding: 10px;
+    background-color: #fff;
+}
+
+/* Drink List Styles */
+h2 {
+    margin-top: 30px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.drink-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+.drink-item {
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 15px;
+    width: 150px;
+    text-align: center;
+    background-color: #fff;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+}
+
+.drink-item .drink-image {
+    width: 80px; /* Fixed width */
+    height: 80px; /* Fixed height */
+    object-fit: contain; /* Scale down without cropping */
+    margin-bottom: 10px;
+}
+
+.drink-item .drink-info h3 {
+    font-size: 18px;
+    margin-bottom: 5px;
+    color: #555;
+    text-align: center; /* Ensure text is centered */
+}
+
+.drink-item .drink-info p {
+    font-size: 16px;
+    color: #777;
+    text-align: center; /* Ensure text is centered */
+}

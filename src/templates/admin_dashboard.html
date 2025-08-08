@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8"> 
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">
+    <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Admin Dashboard</h1>
+            <button class="logout-btn" onclick="location.href='{{ url_for('logout') }}'">Logout</button>
+        </div>
+        <hr>
+        <p>Password to Unlock Vending Machine:</p>
+        <div class="barcode-display">
+            <p class="barcode-number">{{ barcode_number }}</p>
+            <img src="{{ url_for('static', filename='barcodes/' + barcode_number + '.png') }}" alt="Barcode: {{ barcode_number }}" class="barcode-image">
+        </div>
+
+        <hr>
+
+        <h2>Current Drink Stock</h2>
+        <div class="drink-list">
+            {% for drink in drinks %}
+            <div class="drink-item">
+                <img src="{{ url_for('static', filename=drink['image_url']) }}" alt="{{ drink['name'] }}" class="drink-image">
+                <div class="drink-info">
+                    <h3>{{ drink['name'] }}</h3>
+                    <p>Stock: {{ drink['stock_quantity'] }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

@@ -28,6 +28,17 @@ body {
     font-family: 'Montserrat', sans-serif;
 }
 
+.logout-btn {
+    background-color: #dc3545; /* Red color for logout */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    margin-left: 10px; /* Add some space between inbox and logout */
+}
+
 .drink-item {
     display: flex;
     align-items: center;
@@ -38,12 +49,9 @@ body {
 }
 
 .drink-image {
-    align-items: left;
-    max-width: 100px;
-    max-height: 100px;
-    width: auto;
-    height: auto;
-    object-fit: contain;
+    width: 80px; /* Fixed width */
+    height: 80px; /* Fixed height */
+    object-fit: contain; /* Scale down without cropping */
     margin-right: 20px;
     margin-left: 0;
 }
