@@ -17,6 +17,18 @@ def verify_database_content():
     except sqlite3.OperationalError as e:
         print(f"Error accessing Users table: {e}")
 
+    print("\n--- Admins Table ---")
+    try:
+        c.execute('SELECT admin_id, username, password_hash, created_at FROM Admins')
+        admins = c.fetchall()
+        if not admins:
+            print("Admins table is empty.")
+        else:
+            for admin in admins:
+                print(f"  ID: {admin['admin_id']}, Username: {admin['username']}, Password Hash: {admin['password_hash']}, Created At: {admin['created_at']}")
+    except sqlite3.OperationalError as e:
+        print(f"Error accessing Admins table: {e}")
+
     print("\n--- Drinks Table ---")
     try:
         c.execute('SELECT drink_id, name, price, image_url, stock_quantity FROM Drinks')

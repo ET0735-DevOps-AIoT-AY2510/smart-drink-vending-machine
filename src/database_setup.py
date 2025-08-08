@@ -10,6 +10,7 @@ def setup_database():
     c.execute('DROP TABLE IF EXISTS Orders')
     c.execute('DROP TABLE IF EXISTS Drinks')
     c.execute('DROP TABLE IF EXISTS Users')
+    c.execute('DROP TABLE IF EXISTS Admins')
 
     # Create Users table
     c.execute('''
@@ -21,11 +22,21 @@ def setup_database():
         )
     ''')
 
+    # Create Admins table
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS Admins (
+            admin_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT NOT NULL UNIQUE,
+            password_hash TEXT NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+    ''')
+
     # Add Admin user
     admin_username = 'Admin'
     admin_password = 'test1'.encode('utf-8')
     hashed_admin_password = bcrypt.hashpw(admin_password, bcrypt.gensalt())
-    c.execute('INSERT OR IGNORE INTO Users (username, password_hash) VALUES (?, ?)', (admin_username, hashed_admin_password))
+    c.execute('INSERT OR IGNORE INTO Admins (username, password_hash) VALUES (?, ?)', (admin_username, hashed_admin_password))
 
     # Create Drinks table
     c.execute('''

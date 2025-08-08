@@ -29,19 +29,10 @@ def login():
 
         if user and bcrypt.checkpw(password, user['password_hash']):
             session['user_id'] = user['user_id']
-            # Check if the logged-in user is the Admin
-            if username == 'Admin':
-                session['is_admin'] = True
-                return redirect(url_for('admin_dashboard'))
-            else:
-                session['is_admin'] = False
-                return redirect(url_for('drink_page'))
+            session['is_admin'] = False
+            return redirect(url_for('drink_page'))
         else:
-            # Check if the login attempt was for Admin
-            if request.path == url_for('admin_login'):
-                return render_template('login.html', error='Invalid Admin username or password', is_admin_login=True)
-            else:
-                return render_template('login.html', error='Invalid username or password')
+            return render_template('login.html', error='Invalid username or password')
     return render_template('login.html')
 
 @app.route('/admin_login', methods=['GET', 'POST'])
@@ -51,17 +42,13 @@ def admin_login():
         password = request.form['password'].encode('utf-8')
 
         conn = get_db_connection()
-        user = conn.execute('SELECT * FROM Users WHERE username = ?', (username,)).fetchone()
+        admin = conn.execute('SELECT * FROM Admins WHERE username = ?', (username,)).fetchone()
         conn.close()
 
-        if user and bcrypt.checkpw(password, user['password_hash']):
-            session['user_id'] = user['user_id']
-            if username == 'Admin':
-                session['is_admin'] = True
-                return redirect(url_for('admin_dashboard'))
-            else:
-                # Should not happen if only Admin logs in via this route
-                return render_template('login.html', error='Access Denied', is_admin_login=True)
+        if admin and bcrypt.checkpw(password, admin['password_hash']):
+            session['user_id'] = admin['admin_id']
+            session['is_admin'] = True
+            return redirect(url_for('admin_dashboard'))
         else:
             return render_template('login.html', error='Invalid Admin username or password', is_admin_login=True)
     return render_template('login.html', is_admin_login=True)
