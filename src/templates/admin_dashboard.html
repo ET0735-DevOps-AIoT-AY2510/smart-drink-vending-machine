@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta charset="utf-8"> 
+    <meta charset="utf-8">
     <title>Admin Dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">
     <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
 </head>
+
 <body>
     <div class="container">
         <div class="header">
@@ -17,7 +19,8 @@
         <p>Password to Unlock Vending Machine:</p>
         <div class="barcode-display">
             <p class="barcode-number">{{ barcode_number }}</p>
-            <img src="{{ url_for('static', filename='barcodes/' + barcode_number + '.png') }}" alt="Barcode: {{ barcode_number }}" class="barcode-image">
+            <img src="{{ url_for('static', filename='barcodes/' + barcode_number + '.png') }}"
+                alt="Barcode: {{ barcode_number }}" class="barcode-image">
         </div>
 
         <hr>
@@ -26,14 +29,28 @@
         <div class="drink-list">
             {% for drink in drinks %}
             <div class="drink-item">
-                <img src="{{ url_for('static', filename=drink['image_url']) }}" alt="{{ drink['name'] }}" class="drink-image">
+                <img src="{{ url_for('static', filename=drink['image_url']) }}" alt="{{ drink['name'] }}"
+                    class="drink-image">
                 <div class="drink-info">
                     <h3>{{ drink['name'] }}</h3>
                     <p>Stock: {{ drink['stock_quantity'] }}</p>
+                    <div class="stock-controls">
+                        <form action="{{ url_for('update_stock') }}" method="post" style="display:inline;">
+                            <input type="hidden" name="drink_id" value="{{ drink['drink_id'] }}">
+                            <input type="hidden" name="change" value="decrease">
+                            <button type="submit" class="stock-btn decrease-btn">-</button>
+                        </form>
+                        <form action="{{ url_for('update_stock') }}" method="post" style="display:inline;">
+                            <input type="hidden" name="drink_id" value="{{ drink['drink_id'] }}">
+                            <input type="hidden" name="change" value="increase">
+                            <button type="submit" class="stock-btn increase-btn">+</button>
+                        </form>
+                    </div>
                 </div>
             </div>
             {% endfor %}
         </div>
     </div>
 </body>
+
 </html>

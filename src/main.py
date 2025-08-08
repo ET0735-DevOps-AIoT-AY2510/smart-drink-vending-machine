@@ -1,11 +1,16 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify, session
 import sqlite3
 import bcrypt
+import os
 import barcode
 from barcode.writer import ImageWriter
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 app.secret_key = 'your_secret_key' # Replace with a strong secret key
+
+# Ensure the barcodes directory exists
+BARCODES_DIR = os.path.join(app.root_path, 'static', 'barcodes')
+os.makedirs(BARCODES_DIR, exist_ok=True)
 
 #  helper function to get db connection
 def get_db_connection():
@@ -62,14 +67,35 @@ def admin_dashboard():
     # Generate barcode image
     EAN = barcode.get_barcode_class('code128')
     ean = EAN(admin_barcode_data, writer=ImageWriter())
-    barcode_filepath = f'static/barcodes/{admin_barcode_data}'
-    ean.save(f'src/{barcode_filepath}')
+    ean.save(os.path.join(BARCODES_DIR, f'{admin_barcode_data}.png'))
 
     conn = get_db_connection()
     drinks = conn.execute('SELECT * FROM Drinks').fetchall()
     conn.close()
 
     return render_template('admin_dashboard.html', barcode_number=admin_barcode_data, drinks=drinks)
+
+@app.route('/update_stock', methods=['POST'])
+def update_stock():
+    if 'user_id' not in session or not session.get('is_admin'):
+        return redirect(url_for('admin_login'))
+
+    drink_id = request.form['drink_id']
+    change = request.form['change']
+
+    conn = get_db_connection()
+    try:
+        if change == 'increase':
+            conn.execute('UPDATE Drinks SET stock_quantity = stock_quantity + 1 WHERE drink_id = ?', (drink_id,))
+        elif change == 'decrease':
+            conn.execute('UPDATE Drinks SET stock_quantity = stock_quantity - 1 WHERE drink_id = ? AND stock_quantity > 0', (drink_id,))
+        conn.commit()
+    except Exception as e:
+        print(f"Error updating stock: {e}")
+        conn.rollback()
+    finally:
+        conn.close()
+    return redirect(url_for('admin_dashboard'))
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -125,8 +151,7 @@ def process_payment():
         # Generate barcode image
         EAN = barcode.get_barcode_class('code128')
         ean = EAN(collection_barcode, writer=ImageWriter())
-        barcode_filepath = f'static/barcodes/{collection_barcode}'
-        ean.save(f'src/{barcode_filepath}')
+        ean.save(os.path.join(BARCODES_DIR, f'{collection_barcode}.png'))
 
         try:
             conn.execute('UPDATE Drinks SET stock_quantity = stock_quantity - 1 WHERE drink_id = ?', (drink_id,))

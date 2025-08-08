@@ -26,9 +26,16 @@ import cv2
 from pyzbar.pyzbar import decode
 import numpy as np
 from concurrent.futures import ProcessPoolExecutor, as_completed
+from main import app
+
+
+def run_flask_app():
+    app.run(debug=True, use_reloader=False)
 
 
 def main():
+    flask_thread = Thread(target=run_flask_app, daemon=True)
+    flask_thread.start()
     lcd_print_thread = Thread(target=display.lcd_print, daemon=True)
     lcd_print_thread.start()
     keypad_thread = Thread(target=keypad.get_key,

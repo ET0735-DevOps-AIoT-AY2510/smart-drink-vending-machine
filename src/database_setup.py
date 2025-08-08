@@ -4,6 +4,7 @@ import bcrypt
 
 def setup_database():
     conn = sqlite3.connect('vending_machine.db')
+    print(f"Database connected/created at: vending_machine.db")
     c = conn.cursor()
 
     # Drop tables if they exist to ensure a clean start

@@ -45,7 +45,6 @@ security_prompt = True
 stillthere_event = Event()
 BurglarState = False  # False means F8 is active
 
-
 storeSelection = []
 
 temp = 0
@@ -88,7 +87,7 @@ def ledBlink():
 def stillthere_func():
     while stillthere_event.is_set():  # run while event is set
         if 'pytest' not in sys.modules:
-            buzzer.beep(0.5, 1, 0)
+            buzzer.beep(0.5, 1, 1)
         else:
             time.sleep(1)
 
