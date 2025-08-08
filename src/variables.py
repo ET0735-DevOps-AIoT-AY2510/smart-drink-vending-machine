@@ -45,12 +45,6 @@ security_prompt = True
 stillthere_event = Event()
 BurglarState = False  # False means F8 is active
 
-drink_database = {
-    1: {"name": "Coke", "price": "1.50", "stock": 4},
-    6: {"name": "Sprite", "price": "1.50", "stock": 3},
-    13: {"name": "Lemon Tea", "price": "1.70", "stock": 1},
-    19: {"name": "Water", "price": "1.30", "stock": 0}
-}
 
 storeSelection = []
 
@@ -94,7 +88,7 @@ def ledBlink():
 def stillthere_func():
     while stillthere_event.is_set():  # run while event is set
         if 'pytest' not in sys.modules:
-            buzzer.beep(0.5, 1, 1)
+            buzzer.beep(0.5, 1, 0)
         else:
             time.sleep(1)
 

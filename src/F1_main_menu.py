@@ -3,6 +3,7 @@ from threading import Thread
 from hal import hal_keypad as keypad
 import variables as g
 import F6_admin_access as f6
+from get_drink_by_id import get_drink, get_all_drink_ids
 
 
 def main():
@@ -46,7 +47,7 @@ def keypad_press_lcd_display(tester=None):
     while True and (tester == None or tester == 1):
         if tester is not None:
             tester = 2
-            
+
         key = g.shared_keypad_queue.get()  # gets key from queue
         keyvalue = str(key)  # convert key int to key string
 
@@ -89,15 +90,16 @@ def keypad_press_lcd_display(tester=None):
             if selection == 12345:
                 f6.main()
                 g.shared_keypad_queue.put("*")
-            elif selection in g.drink_database:  # drink number exists
-                drink = g.drink_database[selection]
-
-                if drink["stock"] > 0:  # drink has stock
-                    g.lcd_queue.put("clear")
-                    g.lcd_queue.put((drink["name"]+" "+drink["price"], 1))
-                    g.lcd_queue.put(("1=Card 2=QR Code", 2))
-                    g.waiting_for_payment = True
-                    g.storeSelection = []
+            elif g.selection in get_all_drink_ids():
+                drink = get_drink(selection)
+                if drink:  # drink number exists
+                    if drink["stock_quantity"] > 0:  # drink has stock
+                        g.lcd_queue.put("clear")
+                        g.lcd_queue.put(
+                            (f"{drink['name']} ${drink['price']:.2f}", 1))
+                        g.lcd_queue.put(("1=Card 2=QR Code", 2))
+                        g.waiting_for_payment = True
+                        g.storeSelection = []
 
                 else:  # drink no stock
                     g.lcd_queue.put(("Drink out", 1))

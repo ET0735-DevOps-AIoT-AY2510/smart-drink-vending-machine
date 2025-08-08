@@ -15,7 +15,8 @@ import F6_admin_access as f6
 import F8_burglar_detection as f8
 import F9_Monitoring_Liquid_Leakage as f9
 from picamera2 import Picamera2, Preview
-import variables as g  # contains global variables,drink_database and lcd pre-initialised
+import variables as g  # contains global variables, and lcd pre-initialised
+from get_drink_by_id import get_drink
 import LCD_Usage as display
 
 
@@ -116,15 +117,15 @@ def keypad_press_lcd_display():
                 g.storeSelection = []
                 g.lcd_queue.put(("Machine out", 1))
                 g.lcd_queue.put(("of order", 2))
-            elif selection in g.drink_database:  # drink number exists
-                drink = g.drink_database[selection]
-
-                if drink["stock"] > 0:  # drink has stock
-                    g.lcd_queue.put("clear")
-                    g.lcd_queue.put((drink["name"]+" "+drink["price"], 1))
-                    g.lcd_queue.put(("1=Card 2=QR Code", 2))
-                    g.waiting_for_payment = True
-                    g.storeSelection = []
+            else:
+                drink = get_drink(selection)
+                if drink:  # drink number exists
+                    if drink["stock_quantity"] > 0:  # drink has stock
+                        g.lcd_queue.put("clear")
+                        g.lcd_queue.put((f"{drink['name']} ${drink['price']:.2f}", 1))
+                        g.lcd_queue.put(("1=Card 2=QR Code", 2))
+                        g.waiting_for_payment = True
+                        g.storeSelection = []
 
                 else:  # drink no stock
                     g.lcd_queue.put("clear")

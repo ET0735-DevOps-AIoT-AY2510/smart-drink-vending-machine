@@ -19,7 +19,8 @@ import F7_monitoring_stocks as f7
 import F8_burglar_detection as f8
 import F9_Monitoring_Liquid_Leakage as f9
 from picamera2 import Picamera2, Preview
-import variables as g  # contains global variables,drink_database and lcd pre-initialised
+import variables as g  # contains global variables, and lcd pre-initialised
+from get_drink_by_id import get_drink, get_all_drink_ids
 import LCD_Usage as display
 import cv2
 from pyzbar.pyzbar import decode
@@ -83,9 +84,10 @@ def keypad_press_lcd_display():
                         g.waiting_for_payment = False
                         g.card_declined = True
                     else:
+                        drink = get_drink(g.selection)
                         g.lcd_queue.put("clear")
                         g.lcd_queue.put(
-                            (g.drink_database[g.selection]["name"]+" "+g.drink_database[g.selection]["price"], 1))
+                            (f"{drink['name']} ${drink['price']:.2f}", 1))
                         g.lcd_queue.put(("1=Card 2=QR Code", 2))
                         g.card_data_string = 0
                     time.sleep(1)
@@ -102,22 +104,15 @@ def keypad_press_lcd_display():
                 elif g.escape == True:
                     g.escape = False
                 else:
+                    drink = get_drink(g.selection)
                     g.lcd_queue.put("clear")
                     g.lcd_queue.put(
-                        (g.drink_database[g.selection]["name"]+" "+g.drink_database[g.selection]["price"], 1))
+                        (f"{drink['name']} ${drink['price']:.2f}", 1))
                     g.lcd_queue.put(("1=Card 2=QR Code", 2))
                     g.card_data_string = 0
                 time.sleep(1)
 
             continue
-
-        if len(g.storeSelection) >= 5:  # entered number is greater than admin code
-            g.lcd_queue.put("clear")
-            g.lcd_queue.put(("Invalid number,", 1))
-            g.lcd_queue.put(("please retry", 2))
-            time.sleep(5)
-            g.lcd_queue.put("clear")
-            g.storeSelection = []
 
         elif key == "#":
             # turn storeSelection array into int variable
@@ -135,11 +130,13 @@ def keypad_press_lcd_display():
                     g.storeSelection = []
                     g.lcd_queue.put(("Machine out", 1))
                     g.lcd_queue.put(("of order", 2))
-                elif g.selection in g.drink_database:  # drink number exists
-                    if g.drink_database[g.selection]["stock"] > 0:  # drink has stock
+                elif g.selection in get_all_drink_ids():
+                    drink = get_drink(g.selection)
+                    if drink["stock_quantity"] > 0:  # drink has stock
+                        print(drink["stock_quantity"])
                         g.lcd_queue.put("clear")
                         g.lcd_queue.put(
-                            (g.drink_database[g.selection]["name"]+" "+g.drink_database[g.selection]["price"], 1))
+                            (f"{drink['name']} ${drink['price']:.2f}", 1))
                         g.lcd_queue.put(("1=Card 2=QR Code", 2))
                         g.waiting_for_payment = True
                         g.storeSelection = []
@@ -198,12 +195,19 @@ def keypad_press_lcd_display():
                     g.shared_keypad_queue.put("*")
 
         else:
-            if len(g.storeSelection) < 5:
-                g.lcd_queue.put("clear")
-                # stores most recent key press into array
-                g.storeSelection.append(keyvalue)
-                # displays key on lcd (cummulative)
-                g.lcd_queue.put(("".join(g.storeSelection), 1))
+            g.lcd_queue.put("clear")
+            # stores most recent key press into array
+            g.storeSelection.append(keyvalue)
+            # displays key on lcd (cummulative)
+            g.lcd_queue.put(("".join(g.storeSelection), 1))
+
+        if len(g.storeSelection) > 5:  # entered number is greater than admin code
+            g.lcd_queue.put("clear")
+            g.lcd_queue.put(("Invalid number,", 1))
+            g.lcd_queue.put(("please retry", 2))
+            time.sleep(5)
+            g.lcd_queue.put("clear")
+            g.storeSelection = []
 
 
 def resize_for_speed(img, max_dim=800):

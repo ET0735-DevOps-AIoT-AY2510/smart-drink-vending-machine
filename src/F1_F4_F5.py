@@ -9,7 +9,8 @@ import F1_main_menu as f1
 import F4_Monitoring_Temp_Conditions as f4
 import F5_Dispensing_Drink as f5
 
-import variables as g #contains global variables,drink_database and lcd pre-initialised
+import variables as g #contains global variables, and lcd pre-initialised
+from get_drink_by_id import get_drink
 
 
 def main():
@@ -80,13 +81,11 @@ def keypad_press_lcd_display():
 
         elif key == "#": 
             selection=int("".join(g.storeSelection)) #turn storeSelection array into int variable
-
-            if selection in g.drink_database: #drink number exists
-                drink = g.drink_database[selection] 
-
-                if drink["stock"]>0: #drink has stock
+            drink = get_drink(selection)
+            if drink: #drink number exists
+                if drink["stock_quantity"]>0: #drink has stock
                     g.LCD.lcd_clear()
-                    g.LCD.lcd_display_string(drink["name"]+" "+drink["price"],1)
+                    g.LCD.lcd_display_string(f"{drink['name']} ${drink['price']:.2f}",1)
                     g.LCD.lcd_display_string("1=Card 2=QR Code",2)
                     g.waiting_for_payment = True
 

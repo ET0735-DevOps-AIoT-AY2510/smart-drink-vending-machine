@@ -6,12 +6,14 @@ from hal import hal_buzzer as buzzer
 import queue
 import cv2
 from pyzbar.pyzbar import decode
+from get_drink_by_id import get_drink
 
 
 def show_qr_display(drinkNum):
+    drink = get_drink(drinkNum)
     g.lcd_queue.put("clear")
     g.lcd_queue.put(
-        (f"{g.drink_database[drinkNum]['name']} ${g.drink_database[drinkNum]['price']}", 1))
+        (f"{drink['name']} ${drink['price']:.2f}", 1))
     g.lcd_queue.put(("Show QR Code", 2))
 
 
