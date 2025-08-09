@@ -12,6 +12,7 @@ def setup_database():
     c.execute('DROP TABLE IF EXISTS Drinks')
     c.execute('DROP TABLE IF EXISTS Users')
     c.execute('DROP TABLE IF EXISTS Admins')
+    c.execute('DROP TABLE IF EXISTS Emails')
 
     # Create Users table
     c.execute('''
@@ -32,6 +33,17 @@ def setup_database():
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )
     ''')
+
+    # Create Emails table
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS Emails (
+            email_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            email_address TEXT NOT NULL UNIQUE
+        )
+    ''')
+
+    # Add default email address
+    c.execute('INSERT OR IGNORE INTO Emails (email_address) VALUES (?)', ('terencetngkc2007@gmail.com',))
 
     # Add Admin user
     admin_username = 'Admin'

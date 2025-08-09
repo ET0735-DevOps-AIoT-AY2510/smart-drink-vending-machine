@@ -29,6 +29,18 @@ def verify_database_content():
     except sqlite3.OperationalError as e:
         print(f"Error accessing Admins table: {e}")
 
+    print("\n--- Emails Table ---")
+    try:
+        c.execute('SELECT email_id, email_address FROM Emails')
+        emails = c.fetchall()
+        if not emails:
+            print("Emails table is empty.")
+        else:
+            for email in emails:
+                print(f"  ID: {email['email_id']}, Address: {email['email_address']}")
+    except sqlite3.OperationalError as e:
+        print(f"Error accessing Emails table: {e}")
+
     print("\n--- Drinks Table ---")
     try:
         c.execute('SELECT drink_id, name, price, image_url, stock_quantity, reserved_stock FROM Drinks')

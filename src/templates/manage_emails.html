@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <title>Manage Emails</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}"> <!-- Reusing admin.css for basic styling -->
+    <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Manage Emails</h1>
+            <button class="back-btn" onclick="location.href='{{ url_for('admin_dashboard') }}'">Back to Dashboard</button>
+        </div>
+        <hr>
+
+        <h2>Current Email Addresses</h2>
+        {% if emails %}
+        <ul class="email-list">
+            {% for email in emails %}
+            <li>
+                {{ email['email_address'] }}
+                <form action="{{ url_for('delete_email', email_id=email['email_id']) }}" method="post" style="display:inline;">
+                    <button type="submit" class="delete-btn">Delete</button>
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>No email addresses added yet.</p>
+        {% endif %}
+
+        <hr>
+
+        <h2>Add New Email</h2>
+        <form action="{{ url_for('add_email') }}" method="post" class="add-email-form">
+            <input type="email" name="email_address" placeholder="Enter new email address" required>
+            <button type="submit" class="add-btn">Add Email</button>
+        </form>
+    </div>
+</body>
+</html>

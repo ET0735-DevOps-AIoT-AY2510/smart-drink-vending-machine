@@ -132,3 +132,12 @@ if __name__ == '__main__':
     else:
         print("No reserved drinks found.")
 
+def get_all_emails():
+    conn = sqlite3.connect('vending_machine.db')
+    conn.row_factory = sqlite3.Row
+    c = conn.cursor()
+    c.execute('SELECT * FROM Emails')
+    emails = c.fetchall()
+    conn.close()
+    return emails
+

@@ -20,7 +20,6 @@ def getMoist():  # constantly detect moisture
 def monitor_leak():  # send email if moisture detected, display out of order
     if g.moist and g.emailCheckLeak == 0:
         g.send_email(
-            receiver_email='terencetngkc2007@gmail.com',
             subject='Liquid Leakage',
             body_text='Liquid Leakage detected in Vending Machine'
         )

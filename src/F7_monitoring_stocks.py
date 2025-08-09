@@ -23,9 +23,9 @@ def remaining_stock(drinkNum, tester=None):
 
     drink = get_drink(drinkNum)
     if drink['stock_quantity'] < g.stock:
-        g.send_email(receiver_email='terencetngkc2007@gmail.com',
-                     subject='Vending Machine Jammed',
-                     body_text=f'Vending Machine Jammed for {drink["name"]}')
+        g.send_email(
+            subject='Vending Machine Jammed',
+            body_text=f'Vending Machine Jammed for {drink["name"]}')
         g.lcd_queue.put("clear")
         g.lcd_queue.put(("Dispense failed", 1))
         g.lcd_queue.put(("contact 12345", 2))
@@ -33,17 +33,17 @@ def remaining_stock(drinkNum, tester=None):
         g.out_of_order = True
 
     elif drink['stock_quantity'] > g.stock:
-        g.send_email(receiver_email='terencetngkc2007@gmail.com',
-                     subject='Extra drink dispensed',
-                     body_text=f'Extra drink dispensed for {drink["name"]}')
+        g.send_email(
+            subject='Extra drink dispensed',
+            body_text=f'Extra drink dispensed for {drink["name"]}')
         g.out_of_order = True
     if tester is None:
         set_stock_quantity(drinkNum, g.stock)
 
     if g.stock < 5:
-        g.send_email(receiver_email='terencetngkc2007@gmail.com',
-                     subject='Drink is low in stock',
-                     body_text=f'{drink["name"]} currently has {g.stock} left')
+        g.send_email(
+            subject='Drink is low in stock',
+            body_text=f'{drink["name"]} currently has {g.stock} left')
         if tester is not None:
             return 1
 

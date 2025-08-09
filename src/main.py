@@ -4,7 +4,7 @@ import bcrypt
 import os
 import barcode
 from barcode.writer import ImageWriter
-from get_drink_by_id import get_actual_drink, get_drink_id_from_barcode, get_admin_barcode
+from get_drink_by_id import get_actual_drink, get_drink_id_from_barcode, get_admin_barcode, get_all_emails
 import variables as g
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
@@ -92,7 +92,7 @@ def admin_dashboard():
 
     conn.close()
 
-    return render_template('admin_dashboard.html', barcode_number=admin_barcode_data, drinks=drinks_for_admin)
+    return render_template('admin_dashboard.html', barcode_number=admin_barcode_data, drinks=drinks_for_admin, emails=get_all_emails())
 
 @app.route('/update_stock', methods=['POST'])
 def update_stock():
@@ -269,6 +269,42 @@ def collect_drink(order_id):
 def logout():
     session.pop('user_id', None)
     return redirect(url_for('homepage'))
+
+@app.route('/manage_emails', methods=['GET', 'POST'])
+def manage_emails():
+    if 'user_id' not in session or not session.get('is_admin'):
+        return redirect(url_for('admin_login'))
+
+    emails = get_all_emails()
+    return render_template('manage_emails.html', emails=emails)
+
+@app.route('/add_email', methods=['POST'])
+def add_email():
+    if 'user_id' not in session or not session.get('is_admin'):
+        return redirect(url_for('admin_login'))
+
+    email_address = request.form['email_address']
+    conn = get_db_connection()
+    try:
+        conn.execute('INSERT INTO Emails (email_address) VALUES (?)', (email_address,))
+        conn.commit()
+    except sqlite3.IntegrityError:
+        # Handle case where email already exists
+        pass
+    finally:
+        conn.close()
+    return redirect(url_for('manage_emails'))
+
+@app.route('/delete_email/<int:email_id>', methods=['POST'])
+def delete_email(email_id):
+    if 'user_id' not in session or not session.get('is_admin'):
+        return redirect(url_for('admin_login'))
+
+    conn = get_db_connection()
+    conn.execute('DELETE FROM Emails WHERE email_id = ?', (email_id,))
+    conn.commit()
+    conn.close()
+    return redirect(url_for('manage_emails'))
 
 if __name__ == '__main__':
     app.run(debug=True)

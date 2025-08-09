@@ -19,7 +19,7 @@ def main(pytest=None, ir_sensor_state=None):
     elif callable(ir_sensor_state):
         get_ir_state = ir_sensor_state
     else:
-        get_ir_state = lambda: ir_sensor_state
+        def get_ir_state(): return ir_sensor_state
     while pytest is None or pytest == 1:
         if not g.BurglarState and not get_ir_state():
             g.stillthere_event.set()
@@ -69,7 +69,6 @@ def camerafeature():
     resize_and_compress_image(original_path, resized_path)
 
     g.send_email(
-        receiver_email='terencetngkc2007@gmail.com',
         subject='Image of Burglar',
         body_text='Burglar Detected.',
         image_path=resized_path

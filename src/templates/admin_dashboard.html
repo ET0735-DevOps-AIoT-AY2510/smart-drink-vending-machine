@@ -17,6 +17,7 @@
 <body>
     <div class="container">
         <div class="header">
+            <button class="manage-emails-btn" onclick="location.href='{{ url_for('manage_emails') }}'">Manage Emails</button>
             <h1>Admin Dashboard</h1>
             <button class="logout-btn" onclick="location.href='{{ url_for('logout') }}'">Logout</button>
         </div>

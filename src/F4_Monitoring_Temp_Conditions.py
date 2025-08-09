@@ -22,7 +22,6 @@ def temp_Monitor():
 
     if g.temp > 20 and g.check20 == 0:  # emails staff, blinks led at 2 Hz
         g.send_email(
-            receiver_email='terencetngkc2007@gmail.com',
             subject='Irregular Temperature in Vending Machine',
             body_text='Temperature is above 20 degrees celsius, Machine is Disabled'
         )
@@ -32,7 +31,6 @@ def temp_Monitor():
 
     elif g.temp > 10 and g.check10 == 0:  # only emails staff
         g.send_email(
-            receiver_email='terencetngkc2007@gmail.com',
             subject='Irregular Temperature in Vending Machine',
             body_text='Temperature is above 10 degrees celsius'
         )
