@@ -61,8 +61,11 @@ def camera_input():
             print("No barcode or QR code found.")
             code_data = None
         if code_data == "Payment Success":
+            g.lcd_queue.put("clear")
+            g.lcd_queue.put(("Payment Success", 1))
             g.qr_declined = False
             buzzer.beep(0.5, 0, 1)
+            time.sleep(1)
             break
         elif code_data != None:
             g.lcd_queue.put("clear")

@@ -24,8 +24,9 @@ def main(ir_pytest=None, ir_sensor_state=None):
 
     get_ir_state = ir_sensor.get_ir_sensor_state if ir_sensor_state is None else lambda: ir_sensor_state
 
+    # In a real scenario, 10 seconds will be changed to 3minutes and 15 seconds
     while time.time() - g.elapsed <= 10 and not get_ir_state():
-        if (time.time() - g.elapsed >= 5):
+        if (time.time() - g.elapsed >= 5):  # In a real scenario, 5 seconds will be changed to 3minutes
             if not g.security_prompt:
                 g.stillthere_event.set()
                 if ir_pytest is None:

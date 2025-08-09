@@ -46,7 +46,8 @@ def rfid_input(tester=None):
         print(g.card_data_string)
         if g.card_data_string in accepted_card_data:  # accepted card
             g.card_declined = False
-            # No need to say payment success as it is stated in f5
+            g.lcd_queue.put("clear")
+            g.lcd_queue.put(("Payment Success", 1))
             if tester is None:
                 buzzer.beep(0.5, 0, 1)
             time.sleep(1)

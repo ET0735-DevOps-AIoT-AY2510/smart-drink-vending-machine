@@ -46,7 +46,7 @@ def main():
     inactivity_thread.start()
     f4.main()
     f8_main_thread = Thread(target=f8.main)
-    f8_main_thread.start()
+    # f8_main_thread.start()
     f9.main()
     main_menu_thread = Thread(target=keypad_press_lcd_display)
     main_menu_thread.start()
@@ -133,7 +133,7 @@ def keypad_press_lcd_display():
                     g.lcd_queue.put("clear")
                     g.lcd_queue.put(("Drink Purchase", 1))
                     g.lcd_queue.put(("is suspended", 2))
-                    time.sleep(5)
+                    time.sleep(3)
                     g.lcd_queue.put("clear")
                     g.storeSelection = []
                     g.lcd_queue.put(("Machine out", 1))
@@ -141,7 +141,7 @@ def keypad_press_lcd_display():
                 elif g.selection in get_all_drink_ids():
                     drink = get_actual_drink(g.selection)
                     if drink["actual_stock"] > 0:  # drink has stock
-                        print(drink["actual_stock"])
+                        print(drink["actual_stock"])  # For debugging code
                         g.lcd_queue.put("clear")
                         g.lcd_queue.put(
                             (f"{drink['name']} ${drink['price']:.2f}", 1))
@@ -153,15 +153,24 @@ def keypad_press_lcd_display():
                         g.lcd_queue.put("clear")
                         g.lcd_queue.put(("Drink out", 1))
                         g.lcd_queue.put(("of stock", 2))
-                        time.sleep(5)
+                        time.sleep(3)
                         g.lcd_queue.put("clear")
                         g.storeSelection = []
-
+                elif str(g.selection) in get_reserved_drink_barcodes():
+                    g.waiting_for_payment = True
+                    remove_collected_drink(g.selection)
+                    f5.dispensing_drink(
+                        get_drink_id_from_barcode(g.selection))
+                    f7.remaining_stock(
+                        get_drink_id_from_barcode(g.selection))
+                    f1.homescreen()
+                    g.storeSelection = []
+                    g.waiting_for_payment = False
                 else:  # drink number doesnt exist
                     g.lcd_queue.put("clear")
                     g.lcd_queue.put(("Invalid, Please", 1))
                     g.lcd_queue.put(("try again", 2))
-                    time.sleep(5)
+                    time.sleep(3)
                     g.lcd_queue.put("clear")
                     g.storeSelection = []
             else:
@@ -204,12 +213,21 @@ def keypad_press_lcd_display():
                         g.shared_keypad_queue.put("*")
                         break
                     elif code_data in get_reserved_drink_barcodes():
-                        remove_collected_drink(code_data)
-                        f5.dispensing_drink(
-                            get_drink_id_from_barcode(code_data))
-                        f7.remaining_stock(
-                            get_drink_id_from_barcode(code_data))
-                        f1.homescreen()
+                        if not g.out_of_order:
+                            remove_collected_drink(code_data)
+                            f5.dispensing_drink(
+                                get_drink_id_from_barcode(code_data))
+                            f7.remaining_stock(
+                                get_drink_id_from_barcode(code_data))
+                            f1.homescreen()
+                        else:
+                            g.lcd_queue.put("clear")
+                            g.lcd_queue.put(("Redeemption", 1))
+                            g.lcd_queue.put(("is suspended", 2))
+                            time.sleep(3)
+                            g.lcd_queue.put("clear")
+                            g.lcd_queue.put(("Machine out", 1))
+                            g.lcd_queue.put(("of order", 2))
                         break
 
         else:
@@ -219,11 +237,11 @@ def keypad_press_lcd_display():
             # displays key on lcd (cummulative)
             g.lcd_queue.put(("".join(g.storeSelection), 1))
 
-        if len(g.storeSelection) > 5:  # entered number is greater than admin code
+        if len(g.storeSelection) > 16:  # entered number is greater than admin code
             g.lcd_queue.put("clear")
             g.lcd_queue.put(("Invalid number,", 1))
             g.lcd_queue.put(("please retry", 2))
-            time.sleep(5)
+            time.sleep(3)
             g.lcd_queue.put("clear")
             g.storeSelection = []
 
