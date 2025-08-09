@@ -20,8 +20,9 @@ import F8_burglar_detection as f8
 import F9_Monitoring_Liquid_Leakage as f9
 from picamera2 import Picamera2, Preview
 import variables as g  # contains global variables, and lcd pre-initialised
-from get_drink_by_id import get_drink, get_all_drink_ids
 import LCD_Usage as display
+from get_drink_by_id import get_actual_drink, get_drink, get_all_drink_ids, get_reserved_drink_barcodes, get_drink_id_from_barcode
+from remove_collected_drinks import remove_collected_drink
 import cv2
 from pyzbar.pyzbar import decode
 import numpy as np
@@ -45,15 +46,15 @@ def main():
     inactivity_thread.start()
     f4.main()
     f8_main_thread = Thread(target=f8.main)
-    f8_main_thread.start()
+    # f8_main_thread.start()
     f9.main()
     main_menu_thread = Thread(target=keypad_press_lcd_display)
     main_menu_thread.start()
     f1.homescreen()
     while True:
-        if not g.check10 and g.temp >= 10:
+        if not g.check10 and g.temp > 10:
             f4.temp_Monitor()
-        elif not g.check20 and g.temp >= 20:
+        elif not g.check20 and g.temp > 20:
             ledBlink_thread = Thread(target=g.ledBlink, daemon=True)
             ledBlink_thread.start()
             f4.temp_Monitor()
@@ -91,7 +92,7 @@ def keypad_press_lcd_display():
                         g.waiting_for_payment = False
                         g.card_declined = True
                     else:
-                        drink = get_drink(g.selection)
+                        drink = get_actual_drink(g.selection)
                         g.lcd_queue.put("clear")
                         g.lcd_queue.put(
                             (f"{drink['name']} ${drink['price']:.2f}", 1))
@@ -111,7 +112,7 @@ def keypad_press_lcd_display():
                 elif g.escape == True:
                     g.escape = False
                 else:
-                    drink = get_drink(g.selection)
+                    drink = get_actual_drink(g.selection)
                     g.lcd_queue.put("clear")
                     g.lcd_queue.put(
                         (f"{drink['name']} ${drink['price']:.2f}", 1))
@@ -138,9 +139,9 @@ def keypad_press_lcd_display():
                     g.lcd_queue.put(("Machine out", 1))
                     g.lcd_queue.put(("of order", 2))
                 elif g.selection in get_all_drink_ids():
-                    drink = get_drink(g.selection)
-                    if drink["stock_quantity"] > 0:  # drink has stock
-                        print(drink["stock_quantity"])
+                    drink = get_actual_drink(g.selection)
+                    if drink["actual_stock"] > 0:  # drink has stock
+                        print(drink["actual_stock"])
                         g.lcd_queue.put("clear")
                         g.lcd_queue.put(
                             (f"{drink['name']} ${drink['price']:.2f}", 1))
@@ -164,42 +165,52 @@ def keypad_press_lcd_display():
                     g.lcd_queue.put("clear")
                     g.storeSelection = []
             else:
-                g.picam2.capture_file("barcodeforadmin.jpg")
-                image_path = 'barcodeforadmin.jpg'
-                img = cv2.imread(image_path)
+                for i in range(3):
+                    g.picam2.capture_file("barcodeForAdminAndDrinkRedeem.jpg")
+                    image_path = 'barcodeForAdminAndDrinkRedeem.jpg'
+                    img = cv2.imread(image_path)
 
-                try:
-                    if img is None:
-                        print(f"Image not found: {image_path}")
+                    try:
+                        if img is None:
+                            print(f"Image not found: {image_path}")
+                        else:
+                            img = resize_for_speed(img, max_dim=640)
+                            decoded_objects = align_and_decode(img)
+                    except Exception as e:
+                        print(f"Error in thread: {e}")
+                        decoded_objects = []
+
+                    code_data_list = []
+
+                    if decoded_objects:
+                        print(f"Found {len(decoded_objects)} code(s):\n")
+                        for obj in decoded_objects:
+                            code_type = obj.type
+                            code_data = obj.data.decode('utf-8')
+                            code_data_list.append({
+                                'type': code_type,
+                                'data': code_data,
+                                'position': obj.rect
+                            })
+
+                            print(f"Type: {code_type}")
+                            print(f"Data: {code_data}")
+                            print(f"Bounding Box: {obj.rect}\n")
                     else:
-                        img = resize_for_speed(img, max_dim=640)
-                        decoded_objects = align_and_decode(img)
-                except Exception as e:
-                    print(f"Error in thread: {e}")
-                    decoded_objects = []
-
-                code_data_list = []
-
-                if decoded_objects:
-                    print(f"Found {len(decoded_objects)} code(s):\n")
-                    for obj in decoded_objects:
-                        code_type = obj.type
-                        code_data = obj.data.decode('utf-8')
-                        code_data_list.append({
-                            'type': code_type,
-                            'data': code_data,
-                            'position': obj.rect
-                        })
-
-                        print(f"Type: {code_type}")
-                        print(f"Data: {code_data}")
-                        print(f"Bounding Box: {obj.rect}\n")
-                else:
-                    print("No barcode or QR code found.")
-                    code_data = None
-                if code_data == "12345":
-                    f6.main()
-                    g.shared_keypad_queue.put("*")
+                        print("No barcode or QR code found.")
+                        code_data = None
+                    if code_data == "12345":
+                        f6.main()
+                        g.shared_keypad_queue.put("*")
+                        break
+                    elif code_data in get_reserved_drink_barcodes():
+                        remove_collected_drink(code_data)
+                        f5.dispensing_drink(
+                            get_drink_id_from_barcode(code_data))
+                        f7.remaining_stock(
+                            get_drink_id_from_barcode(code_data))
+                        f1.homescreen()
+                        break
 
         else:
             g.lcd_queue.put("clear")

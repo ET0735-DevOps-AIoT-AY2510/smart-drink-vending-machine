@@ -95,5 +95,13 @@ body {
 }
 
 hr {
-    margin: 20px 0;
+        margin: 20px 0;
+}
+
+.user-info {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px; /* Similar to button text size */
+    color: #333; /* Dark gray for good contrast */
+    margin-right: auto; /* Pushes other items to the right */
+    padding: 5px 10px; /* Some padding for visual comfort */
 }

@@ -14,7 +14,7 @@ def main():
 def tempGet():  # constantly gets temp through thread in main
     while True:
         time.sleep(10)
-        g.temp = 10  # temp value for testing
+        g.temp = 11  # temp value for testing
         # g.temp, _ = temp_humid.read_temp_humidity()
 
 

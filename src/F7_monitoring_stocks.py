@@ -2,7 +2,7 @@ from hal import hal_usonic as us
 import time
 import variables as g
 from get_drink_by_id import get_drink
-from update_drink_stock import update_stock
+from update_drink_stock import set_stock_quantity
 
 # assume diameter of a drink can is 6cm and length of vending machine is 80cm and max drinks inside one row at once is 10
 
@@ -38,7 +38,7 @@ def remaining_stock(drinkNum, tester=None):
                      body_text=f'Extra drink dispensed for {drink["name"]}')
         g.out_of_order = True
     if tester is None:
-        update_stock(drinkNum, g.stock)
+        set_stock_quantity(drinkNum, g.stock)
 
     if g.stock < 5:
         g.send_email(receiver_email='terencetngkc2007@gmail.com',

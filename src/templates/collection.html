@@ -14,10 +14,16 @@
     </header>
             <hr>
         <p>Payment successful!</p>
+        {% if drink %}
+        <div class="drink-image-display">
+            <img src="{{ url_for('static', filename=drink['image_url']) }}" alt="{{ drink['name'] }}" style="width: 100px; height: 100px; object-fit: contain;">
+            <h3>{{ drink['name'] }}</h3>
+        </div>
+        {% endif %}
         <div class="barcode"> 
             <img src="{{ url_for('static', filename='barcodes/' + barcode + '.png') }}" alt="Barcode: {{ barcode }}">
         </div>
-        <p>Flash this barcode at the vending machine camera to collect your drink!</p>
+        <p>Flash this barcode at the vending machine and click "#" to collect your drink!</p>
         <button id="returnButton" onclick="location.href='{{ url_for('drink_page') }}'">Return</button>
     </div>
 

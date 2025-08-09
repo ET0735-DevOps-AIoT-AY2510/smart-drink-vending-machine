@@ -1,0 +1,9 @@
+Flask
+bcrypt
+python-barcode
+Pillow
+picamera2
+pyzbar
+numpy
+smbus2
+RPi.GPIO

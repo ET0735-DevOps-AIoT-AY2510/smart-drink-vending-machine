@@ -46,7 +46,8 @@ def setup_database():
             name TEXT NOT NULL,
             price REAL NOT NULL,
             image_url TEXT,
-            stock_quantity INTEGER NOT NULL DEFAULT 0
+            stock_quantity INTEGER NOT NULL DEFAULT 0,
+            reserved_stock INTEGER NOT NULL DEFAULT 0
         )
     ''')
 
@@ -66,10 +67,10 @@ def setup_database():
 
     # Populate Drinks table with initial data
     drinks = [
-        ('Coke', 1.30, 'images/coke.png', 24),
-        ('Sprite', 1.50, 'images/sprite.png', 18),
-        ('Lemon Tea', 1.10, 'images/lemon_tea.png', 30),
-        ('Water', 1.00, 'images/water.png', 40)
+        ('Coke', 1.30, 'images/coke.png', 10),
+        ('Sprite', 1.50, 'images/sprite.png', 5),
+        ('Lemon Tea', 1.10, 'images/lemon_tea.png', 1),
+        ('Water', 1.00, 'images/water.png', 0)
     ]
 
     c.executemany('INSERT INTO Drinks (name, price, image_url, stock_quantity) VALUES (?,?,?,?)', drinks)

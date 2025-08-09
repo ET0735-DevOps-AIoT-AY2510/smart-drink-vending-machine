@@ -3,7 +3,7 @@ from threading import Thread
 from hal import hal_keypad as keypad
 import variables as g
 import F6_admin_access as f6
-from get_drink_by_id import get_drink, get_all_drink_ids
+from get_drink_by_id import get_actual_drink, get_drink, get_all_drink_ids
 
 
 def main():
@@ -76,24 +76,26 @@ def keypad_press_lcd_display(tester=None):
                 g.waiting_for_payment = False
             continue
 
-        if len(g.storeSelection) > 5:  # entered number is greater than admin code
-            g.lcd_queue.put("clear")
-            g.lcd_queue.put(("Invalid number,", 1))
-            g.lcd_queue.put(("please retry", 2))
-            time.sleep(5)
-            g.lcd_queue.put("clear")
-            g.storeSelection = []
-
         elif key == "#":
             # turn storeSelection array into int variable
-            selection = int("".join(g.storeSelection))
-            if selection == 12345:
-                f6.main()
-                g.shared_keypad_queue.put("*")
-            elif g.selection in get_all_drink_ids():
-                drink = get_drink(selection)
-                if drink:  # drink number exists
-                    if drink["stock_quantity"] > 0:  # drink has stock
+            if g.storeSelection:
+                g.selection = int("".join(g.storeSelection))
+                if g.selection == 12345:
+                    f6.main()
+                    g.shared_keypad_queue.put("*")
+                elif g.out_of_order:
+                    g.lcd_queue.put("clear")
+                    g.lcd_queue.put(("Drink Purchase", 1))
+                    g.lcd_queue.put(("is suspended", 2))
+                    time.sleep(5)
+                    g.lcd_queue.put("clear")
+                    g.storeSelection = []
+                    g.lcd_queue.put(("Machine out", 1))
+                    g.lcd_queue.put(("of order", 2))
+                elif g.selection in get_all_drink_ids():
+                    drink = get_actual_drink(g.selection)
+                    if drink["actual_stock"] > 0:  # drink has stock
+                        print(drink["actual_stock"])
                         g.lcd_queue.put("clear")
                         g.lcd_queue.put(
                             (f"{drink['name']} ${drink['price']:.2f}", 1))
@@ -101,19 +103,21 @@ def keypad_press_lcd_display(tester=None):
                         g.waiting_for_payment = True
                         g.storeSelection = []
 
-                else:  # drink no stock
-                    g.lcd_queue.put(("Drink out", 1))
-                    g.lcd_queue.put(("of stock", 2))
+                    else:  # drink no stock
+                        g.lcd_queue.put("clear")
+                        g.lcd_queue.put(("Drink out", 1))
+                        g.lcd_queue.put(("of stock", 2))
+                        time.sleep(5)
+                        g.lcd_queue.put("clear")
+                        g.storeSelection = []
+
+                else:  # drink number doesnt exist
+                    g.lcd_queue.put("clear")
+                    g.lcd_queue.put(("Invalid, Please", 1))
+                    g.lcd_queue.put(("try again", 2))
                     time.sleep(5)
                     g.lcd_queue.put("clear")
                     g.storeSelection = []
-
-            else:  # drink number doesnt exist
-                g.lcd_queue.put(("Invalid, Please", 1))
-                g.lcd_queue.put(("try again", 2))
-                time.sleep(5)
-                g.lcd_queue.put("clear")
-                g.storeSelection = []
 
         else:
             if len(g.storeSelection) < 6:

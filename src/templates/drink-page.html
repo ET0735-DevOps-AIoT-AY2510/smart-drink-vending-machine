@@ -10,6 +10,11 @@
 <body>
     <div class="container">
         <div class="header">
+            {% if username %}
+            <div class="user-info">
+                Logged in: {{ username }}
+            </div>
+            {% endif %}
             <h1>Order Drink</h1>
         <button class="inbox-btn" onclick="location.href='{{ url_for('inbox') }}'">Inbox</button>
         <button class="logout-btn" onclick="location.href='{{ url_for('logout') }}'">Logout</button>
@@ -22,7 +27,7 @@
             <div class="drink-info">
                 <h2>{{ drink['name'] }}</h2>
                 <p><span class="price">${{ "%.2f"|format(drink['price']) }}</span></p>
-                {% if drink['stock_quantity'] > 0 %}
+                {% if drink['actual_stock'] > 0 %}
                 <button class="purchase-btn" onclick="location.href='{{ url_for('payment', drink_id=drink['drink_id']) }}'">Purchase</button>
                 {% else %}
                 <button class="purchase-btn" disabled>Unavailable</button>

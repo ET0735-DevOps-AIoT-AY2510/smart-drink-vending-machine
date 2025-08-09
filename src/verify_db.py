@@ -31,13 +31,13 @@ def verify_database_content():
 
     print("\n--- Drinks Table ---")
     try:
-        c.execute('SELECT drink_id, name, price, image_url, stock_quantity FROM Drinks')
+        c.execute('SELECT drink_id, name, price, image_url, stock_quantity, reserved_stock FROM Drinks')
         drinks = c.fetchall()
         if not drinks:
             print("Drinks table is empty.")
         else:
             for drink in drinks:
-                print(f"  ID: {drink['drink_id']}, Name: {drink['name']}, Price: {drink['price']:.2f}, Image: {drink['image_url']}, Stock: {drink['stock_quantity']}")
+                print(f"  ID: {drink['drink_id']}, Name: {drink['name']}, Price: {drink['price']:.2f}, Image: {drink['image_url']}, Stock: {drink['stock_quantity']}, Reserved: {drink['reserved_stock']}")
     except sqlite3.OperationalError as e:
         print(f"Error accessing Drinks table: {e}")
 
