@@ -15,6 +15,7 @@ RUN apt-get update && apt-get install -y \
 
 # Copy the requirements file and install dependencies
 COPY requirements.txt .
+RUN pip install --upgrade pip setuptools
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the entire project directory into the container
