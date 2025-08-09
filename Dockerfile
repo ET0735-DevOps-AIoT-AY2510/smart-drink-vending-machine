@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y \
     libzbar0 \
     gcc \
     python3-dev \
+    libcap-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy the requirements file and install dependencies
