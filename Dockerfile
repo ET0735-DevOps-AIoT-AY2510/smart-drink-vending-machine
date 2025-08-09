@@ -6,17 +6,18 @@ WORKDIR /app
 
 # Install system dependencies for pyzbar (zbar library)
 RUN apt-get update && apt-get install -y \
+    build-essential \
     libzbar0 \
     gcc \
     g++ \
     python3-dev \
     libcap-dev \
+    libatlas-base-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy the requirements file and install dependencies
 COPY requirements.txt .
-RUN pip install --upgrade pip setuptools
-RUN pip install --no-cache-dir --no-build-isolation -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the entire project directory into the container
 # This includes src/, templates/, static/, and vending_machine.db
