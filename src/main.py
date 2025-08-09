@@ -5,6 +5,7 @@ import os
 import barcode
 from barcode.writer import ImageWriter
 from get_drink_by_id import get_actual_drink, get_drink_id_from_barcode
+import variables as g
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 app.secret_key = 'your_secret_key' # Replace with a strong secret key
@@ -217,7 +218,7 @@ def collection_page():
         if drink_id:
             drink = get_actual_drink(drink_id)
 
-    return render_template('collection.html', barcode=barcode, drink=drink)
+    return render_template('collection.html', barcode=barcode, drink=drink, out_of_order=g.out_of_order)
 
 @app.route('/inbox')
 def inbox():
