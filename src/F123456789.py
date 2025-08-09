@@ -21,7 +21,7 @@ import F9_Monitoring_Liquid_Leakage as f9
 from picamera2 import Picamera2, Preview
 import variables as g  # contains global variables, and lcd pre-initialised
 import LCD_Usage as display
-from get_drink_by_id import get_actual_drink, get_drink, get_all_drink_ids, get_reserved_drink_barcodes, get_drink_id_from_barcode
+from get_drink_by_id import get_actual_drink, get_drink, get_all_drink_ids, get_reserved_drink_barcodes, get_drink_id_from_barcode, get_admin_barcode
 from remove_collected_drinks import remove_collected_drink
 import cv2
 from pyzbar.pyzbar import decode
@@ -126,7 +126,7 @@ def keypad_press_lcd_display():
             # turn storeSelection array into int variable
             if g.storeSelection:
                 g.selection = int("".join(g.storeSelection))
-                if g.selection == 12345:
+                if g.selection == int(get_admin_barcode()):
                     f6.main()
                     g.shared_keypad_queue.put("*")
                 elif g.out_of_order:
@@ -208,7 +208,7 @@ def keypad_press_lcd_display():
                     else:
                         print("No barcode or QR code found.")
                         code_data = None
-                    if code_data == "12345":
+                    if code_data == get_admin_barcode():
                         f6.main()
                         g.shared_keypad_queue.put("*")
                         break

@@ -4,10 +4,11 @@ import bcrypt
 import os
 import barcode
 from barcode.writer import ImageWriter
-from get_drink_by_id import get_actual_drink, get_drink_id_from_barcode
+from get_drink_by_id import get_actual_drink, get_drink_id_from_barcode, get_admin_barcode
 import variables as g
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
+app.root_path = os.path.dirname(os.path.abspath(__file__))
 app.secret_key = 'your_secret_key' # Replace with a strong secret key
 
 ALLOWED_ROUTES = ['homepage', 'login', 'admin_login', 'signup', 'static']
@@ -72,11 +73,12 @@ def admin_dashboard():
     if 'user_id' not in session or not session.get('is_admin'):
         return redirect(url_for('admin_login'))
 
-    admin_barcode_data = '12345'
+    admin_barcode_data = get_admin_barcode()
     # Generate barcode image
     EAN = barcode.get_barcode_class('code128')
     ean = EAN(admin_barcode_data, writer=ImageWriter())
-    ean.save(os.path.join(BARCODES_DIR, f'{admin_barcode_data}.png'))
+    ean.save(os.path.join(BARCODES_DIR, f'{admin_barcode_data}'))
+    print(f"Saving barcode to: {os.path.join(BARCODES_DIR, f'{admin_barcode_data}.png')}")
 
     conn = get_db_connection()
 

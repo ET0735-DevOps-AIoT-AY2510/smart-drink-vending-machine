@@ -1,4 +1,17 @@
 import sqlite3
+import time
+import random
+
+admin_barcode = None
+barcode_generation_time = 0
+
+def get_admin_barcode():
+    global admin_barcode, barcode_generation_time
+    current_time = time.time()
+    if current_time - barcode_generation_time > 30:
+        admin_barcode = ''.join(random.choices('0123456789', k=10))
+        barcode_generation_time = current_time
+    return admin_barcode
 
 def get_drink(drink_id):
     """Fetches a drink from the database by its ID."""
