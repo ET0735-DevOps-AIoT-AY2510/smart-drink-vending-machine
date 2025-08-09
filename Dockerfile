@@ -8,6 +8,7 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
     libzbar0 \
     gcc \
+    g++ \
     python3-dev \
     libcap-dev \
     && rm -rf /var/lib/apt/lists/*

@@ -46,7 +46,7 @@ def main():
     inactivity_thread.start()
     f4.main()
     f8_main_thread = Thread(target=f8.main)
-    # f8_main_thread.start()
+    f8_main_thread.start()
     f9.main()
     main_menu_thread = Thread(target=keypad_press_lcd_display)
     main_menu_thread.start()
