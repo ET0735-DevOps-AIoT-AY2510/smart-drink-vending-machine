@@ -13,9 +13,15 @@ from pathlib import Path
 import variables as g
 
 
-def main(pytest=None):
+def main(pytest=None, ir_sensor_state=None):
+    if ir_sensor_state is None:
+        get_ir_state = ir_sensor.get_ir_sensor_state
+    elif callable(ir_sensor_state):
+        get_ir_state = ir_sensor_state
+    else:
+        get_ir_state = lambda: ir_sensor_state
     while pytest is None or pytest == 1:
-        if not g.BurglarState and not ir_sensor.get_ir_sensor_state():
+        if not g.BurglarState and not get_ir_state():
             g.stillthere_event.set()
             security_thread = Thread(target=g.stillthere_func)
             security_thread.start()
@@ -23,7 +29,7 @@ def main(pytest=None):
             if pytest is None:
                 camera_thread.start()
 
-            while (not g.BurglarState and not ir_sensor.get_ir_sensor_state() and (pytest is None or pytest == 1)) or camera_thread.is_alive():
+            while (not g.BurglarState and not get_ir_state() and (pytest is None or pytest == 1)) or camera_thread.is_alive():
                 # So that it does not keep sending emails and continuously locks the door
                 servo.set_servo_position(0)
                 time.sleep(0.1)
@@ -32,7 +38,7 @@ def main(pytest=None):
                     pytest += 1
                     time.sleep(3)
         try:
-            if not g.BurglarState and ir_sensor.get_ir_sensor_state() and security_thread.is_alive():
+            if not g.BurglarState and get_ir_state() and security_thread.is_alive():
                 g.f8_test_flag_2 = True
                 if not camera_thread.is_alive():
                     g.stillthere_event.clear()

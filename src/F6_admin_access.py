@@ -9,7 +9,7 @@ from hal import hal_keypad as keypad
 import variables as g
 
 
-def main(ir_pytest=None):
+def main(ir_pytest=None, ir_sensor_state=None):
     if ir_pytest is None:
         g.out_of_order = True
         g.BurglarState = True
@@ -21,7 +21,10 @@ def main(ir_pytest=None):
     security_thread = Thread(target=g.stillthere_func)
     if ir_pytest is None:
         g.elapsed = time.time()
-    while time.time() - g.elapsed <= 10 and not ir_sensor.get_ir_sensor_state():
+
+    get_ir_state = ir_sensor.get_ir_sensor_state if ir_sensor_state is None else lambda: ir_sensor_state
+
+    while time.time() - g.elapsed <= 10 and not get_ir_state():
         if (time.time() - g.elapsed >= 5):
             if not g.security_prompt:
                 g.stillthere_event.set()

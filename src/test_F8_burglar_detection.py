@@ -4,31 +4,33 @@ import F8_burglar_detection as f8
 import time
 
 
-def test_door_was_pried_open(monkeypatch):
+def test_door_was_pried_open():
     g.f8_test_flag_1 = False
     g.f8_test_flag_2 = False
     g.BurglarState = False
-    monkeypatch.setattr("hal.hal_ir_sensor.get_ir_sensor_state", lambda: False)
-    f8.main(pytest=1)
+    f8.main(pytest=1, ir_sensor_state=False)
     assert g.f8_test_flag_1 is True and g.f8_test_flag_2 is False
 
 
-def test_door_is_closed(monkeypatch):
+def test_door_is_closed():
     g.f8_test_flag_1 = False
     g.f8_test_flag_2 = False
-    monkeypatch.setattr("hal.hal_ir_sensor.get_ir_sensor_state", lambda: True)
-    f8.main(pytest=1)
+    f8.main(pytest=1, ir_sensor_state=True)
     # Door was not opened at all
     assert g.f8_test_flag_1 is False and g.f8_test_flag_2 is False
 
 
-def test_door_was_pried_opened_then_closed(monkeypatch):
+def test_door_was_pried_opened_then_closed():
     g.f8_test_flag_1 = False
     g.f8_test_flag_2 = False
-    monkeypatch.setattr("hal.hal_ir_sensor.get_ir_sensor_state", lambda: False)
-    t = threading.Thread(target=f8.main, args=(1,))
+    sensor_state = [False]  # Use a list to make it mutable
+
+    def ir_sensor_state_func():
+        return sensor_state[0]
+
+    t = threading.Thread(target=f8.main, args=(1, ir_sensor_state_func))
     t.start()
     time.sleep(1)
-    monkeypatch.setattr("hal.hal_ir_sensor.get_ir_sensor_state", lambda: True)
+    sensor_state[0] = True
     t.join()
     assert g.f8_test_flag_1 is True and g.f8_test_flag_2 is True
