@@ -10,7 +10,7 @@ services:
       - ./src:/app/src
       - ./data:/app/data
     environment:
-      - PYTHONPATH=/app
+      - PYTHONPATH=/app:$PYTHONPATH
       - FLASK_ENV=production
     restart: unless-stopped
-    command: /bin/bash -c "python3 src/database_setup.py && python3 src/F123456789.py"
+    command: /bin/bash -c "/app/start.sh"

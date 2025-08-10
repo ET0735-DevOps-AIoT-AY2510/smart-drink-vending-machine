@@ -18,4 +18,3 @@ pyserial==3.5  # Serial communication for sensors
 
 # Additional utilities
 python-dotenv==1.0.0
-spi==0.2.0
