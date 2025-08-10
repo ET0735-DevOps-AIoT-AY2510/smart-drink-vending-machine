@@ -24,7 +24,8 @@ RUN apt-get install -y \
     libtiff5-dev libjpeg-dev libpng-dev \
     libdc1394-22-dev libv4l-dev v4l-utils \
     pkg-config cmake build-essential python3-dev \
-    python3-numpy python3-scipy python3-matplotlib python3-pandas python3-opencv \
+    python3-numpy python3-scipy python3-matplotlib python3-pandas \
+    python3-opencv \
  && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements first (better Docker caching)
