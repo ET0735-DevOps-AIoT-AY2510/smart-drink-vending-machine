@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  vending-machine:
+    build: .
+    container_name: vending-machine-app
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./src:/app/src
+      - ./data:/app/data
+    environment:
+      - PYTHONPATH=/app
+      - FLASK_ENV=production
+    restart: unless-stopped
+    command: /bin/bash -c "python src/database_setup.py && python src/F123456789.py"

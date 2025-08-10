@@ -23,7 +23,6 @@ from get_drink_by_id import get_all_drink_ids, get_drink
 import LCD_Usage as display
 import cv2
 from pyzbar.pyzbar import decode
-import numpy as np
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
 

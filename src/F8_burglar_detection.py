@@ -52,13 +52,6 @@ def main(pytest=None, ir_sensor_state=None):
             pytest += 1
 
 
-'''def forcedlock():
-    servo.init()
-    
-    while g.stillthere_event.is_set():
-        servo.set_servo_position(0)'''
-
-
 def camerafeature():
     original_path = "burglar_original.jpg"
     resized_path = "burglar.jpg"

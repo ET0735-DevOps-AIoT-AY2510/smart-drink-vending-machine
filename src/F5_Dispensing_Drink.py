@@ -1,7 +1,6 @@
 import time
 from hal import hal_dc_motor as dc
 import variables as g
-import F7_monitoring_stocks as f7
 from get_drink_by_id import get_drink
 from update_drink_stock import set_stock_quantity
 

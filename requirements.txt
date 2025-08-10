@@ -1,9 +1,21 @@
-Flask
-bcrypt
-python-barcode
-Pillow
-picamera2
-pyzbar
-numpy
-smbus2
-RPi.GPIO
+# Core Python packages
+flask==2.3.3
+bcrypt==4.0.1
+
+# Camera and image processing
+picamera2==0.3.12
+opencv-python==4.8.1.78
+numpy==1.24.3
+pyzbar==0.1.9
+
+# Hardware interface (GPIO and sensors)
+RPi.GPIO==0.7.1
+smbus2==0.4.2
+spidev==3.6
+
+# Additional hardware libraries
+mfrc522==0.0.7  # RFID reader support
+pyserial==3.5  # Serial communication for sensors
+
+# Additional utilities
+python-dotenv==1.0.0

@@ -52,11 +52,6 @@ def main(ir_pytest=None, ir_sensor_state=None):
         security_thread.join()
 
 
-'''def key_pressed(key):
-    if (time.time() - g.elapsed >= 5):
-        g.stillthere = True'''
-
-
 def unlock_door(security_thread):
     g.stillthere_event.clear()
     servo.set_servo_position(90)
