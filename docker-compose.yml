@@ -13,4 +13,4 @@ services:
       - PYTHONPATH=/app
       - FLASK_ENV=production
     restart: unless-stopped
-    command: /bin/bash -c "python src/database_setup.py && python src/F123456789.py"
+    command: /bin/bash -c "python3 src/database_setup.py && python3 src/F123456789.py"

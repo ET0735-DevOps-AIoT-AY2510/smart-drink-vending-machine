@@ -26,7 +26,6 @@ camera_config = picam2.create_still_configuration(
     display="lores"
 )
 picam2.configure(camera_config)
-picam2.start_preview(Preview.QTGL)
 picam2.start()
 
 escape = False

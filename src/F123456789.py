@@ -18,7 +18,6 @@ import F6_admin_access as f6
 import F7_monitoring_stocks as f7
 import F8_burglar_detection as f8
 import F9_Monitoring_Liquid_Leakage as f9
-from picamera2 import Picamera2, Preview
 import variables as g  # contains global variables, and lcd pre-initialised
 import LCD_Usage as display
 from get_drink_by_id import get_actual_drink, get_drink, get_all_drink_ids, get_reserved_drink_barcodes, get_drink_id_from_barcode, get_admin_barcode
