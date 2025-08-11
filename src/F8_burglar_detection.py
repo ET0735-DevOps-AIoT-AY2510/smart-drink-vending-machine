@@ -1,15 +1,8 @@
 from PIL import Image
-import os
 from hal import hal_ir_sensor as ir_sensor
 from hal import hal_servo as servo
-from picamera2 import Picamera2, Preview
 import time
-from threading import Thread, Event
-import F6_admin_access as admin
-import smtplib
-from email.message import EmailMessage
-from email.utils import make_msgid
-from pathlib import Path
+from threading import Thread
 import variables as g
 
 

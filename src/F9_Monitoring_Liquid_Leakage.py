@@ -1,8 +1,6 @@
 from hal import hal_moisture_sensor as moistSens
-from hal import hal_led as led
 import time
 from threading import Thread
-from email.message import EmailMessage
 import variables as g
 
 

@@ -1,6 +1,5 @@
 # Raspberry Pi-compatible base image (Debian Bullseye Slim, ARM 32-bit)
 FROM arm32v7/debian:bullseye-slim
-
 # Set working directory
 WORKDIR /app
 
@@ -23,6 +22,7 @@ RUN apt-get install -y \
     libwebp-dev libxvidcore-dev libx264-dev \
     libtiff5-dev libjpeg-dev libpng-dev \
     libdc1394-22-dev libv4l-dev v4l-utils \
+    libzbar0 libzbar-dev \
     pkg-config cmake build-essential python3-dev \
     python3-numpy python3-scipy python3-matplotlib python3-pandas python3-opencv \
  && rm -rf /var/lib/apt/lists/*
@@ -34,13 +34,8 @@ COPY requirements.txt .
 RUN pip3 install --no-cache-dir -r requirements.txt
 
 # --- SPI-Py installation ---
-# Set SPI-Py path environment variable
 ENV SPI_PATH=/app/src/SPI-Py
-
-# Copy SPI-Py source code into container
 COPY src/SPI-Py/ $SPI_PATH/
-
-# Install SPI-Py
 WORKDIR $SPI_PATH
 RUN python3 setup.py install
 
@@ -56,11 +51,8 @@ ENV PYTHONPATH=/app
 ENV FLASK_APP=src/main.py
 ENV FLASK_ENV=production
 
-# Startup script
+# Startup script (only runs main app)
 RUN echo '#!/bin/bash\n\
-echo "Setting up database..."\n\
-python3 src/database_setup.py\n\
-echo "Database setup complete!"\n\
 echo "Starting main application..."\n\
 python3 src/F123456789.py' > /app/start.sh \
  && chmod +x /app/start.sh

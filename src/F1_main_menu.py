@@ -3,7 +3,7 @@ from threading import Thread
 from hal import hal_keypad as keypad
 import variables as g
 import F6_admin_access as f6
-from get_drink_by_id import get_actual_drink, get_drink, get_all_drink_ids
+from get_drink_by_id import get_actual_drink, get_all_drink_ids
 
 
 def main():

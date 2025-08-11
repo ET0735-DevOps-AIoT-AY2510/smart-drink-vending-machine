@@ -1,11 +1,8 @@
-from threading import Thread, Event
+from threading import Thread
 import time
 from hal import hal_servo as servo
-from hal import hal_buzzer as buzzer
 from hal import hal_led as led
-from hal import hal_lcd as LCD
 from hal import hal_ir_sensor as ir_sensor
-from hal import hal_keypad as keypad
 import variables as g
 
 
