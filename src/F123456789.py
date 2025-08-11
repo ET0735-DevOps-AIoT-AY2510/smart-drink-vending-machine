@@ -30,7 +30,7 @@ from main import app
 
 
 def run_flask_app():
-    app.run(debug=True, use_reloader=False)
+    app.run(host='0.0.0.0', debug=True, use_reloader=False)
 
 
 def main():
