@@ -19,7 +19,6 @@ def show_qr_display(drinkNum):
 
 def camera_input():
     for i in range(3):
-        g.last_key_time = time.time()
         try:
             if g.shared_keypad_queue.get(block=False) == "*":
                 g.shared_keypad_queue.put("*")
@@ -35,7 +34,7 @@ def camera_input():
             if img is None:  # For debugging
                 print(f"Image not found: {image_path}")
             else:
-                img = resize_for_speed(img, max_dim=640)
+                img = resize_for_speed(img, max_dim=800)
                 decoded_objects = align_and_decode(img)
         except Exception as e:
             print(f"Error in thread: {e}")
@@ -74,12 +73,14 @@ def camera_input():
             g.lcd_queue.put(("please try again", 2))
             time.sleep(3)
             break
+        g.last_key_time = time.time()
     else:
         g.lcd_queue.put("clear")
         buzzer.beep(1, 1, 1)
         g.lcd_queue.put(("Nth detected,", 1))
         g.lcd_queue.put(("please try again", 2))
         time.sleep(3)
+        g.last_key_time = time.time()
 
 
 def resize_for_speed(img, max_dim=800):

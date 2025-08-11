@@ -150,7 +150,7 @@ def keypad_press_lcd_display():
 
                     else:  # drink no stock
                         g.lcd_queue.put("clear")
-                        g.lcd_queue.put(("Drink out", 1))
+                        g.lcd_queue.put((f"{drink['name']} out", 1))
                         g.lcd_queue.put(("of stock", 2))
                         time.sleep(3)
                         g.lcd_queue.put("clear")
@@ -182,7 +182,7 @@ def keypad_press_lcd_display():
                         if img is None:
                             print(f"Image not found: {image_path}")
                         else:
-                            img = resize_for_speed(img, max_dim=640)
+                            img = resize_for_speed(img, max_dim=800)
                             decoded_objects = align_and_decode(img)
                     except Exception as e:
                         print(f"Error in thread: {e}")
@@ -228,6 +228,17 @@ def keypad_press_lcd_display():
                             g.lcd_queue.put(("Machine out", 1))
                             g.lcd_queue.put(("of order", 2))
                         break
+                    elif code_data != None:
+                        g.lcd_queue.put("clear")
+                        g.lcd_queue.put(("Invalid", 1))
+                        g.lcd_queue.put(("Code", 2))
+                        time.sleep(3)
+                        g.shared_keypad_queue.put("*")
+                        break
+                    if i == 2:
+                        g.lcd_queue.put("clear")
+                        g.lcd_queue.put(("Nth detected,", 1))
+                        g.lcd_queue.put(("pls try again", 2))
 
         else:
             g.lcd_queue.put("clear")

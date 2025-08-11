@@ -1,5 +1,6 @@
 # Raspberry Pi-compatible base image (Debian Bullseye Slim, ARM 32-bit)
 FROM arm32v7/debian:bullseye-slim
+
 # Set working directory
 WORKDIR /app
 

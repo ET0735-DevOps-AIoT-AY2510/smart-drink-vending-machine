@@ -10,6 +10,7 @@ from hal import hal_ir_sensor as ir_sensor
 from hal import hal_servo as servo
 from hal import hal_buzzer as buzzer
 from hal import hal_usonic as us
+from hal import hal_adc as adc
 from threading import Thread, Event
 import time
 import queue
@@ -151,3 +152,4 @@ ir_sensor.init()
 servo.init()
 keypad.init(key_pressed)
 us.init()
+adc.init()

@@ -4,9 +4,13 @@ from hal import hal_servo as servo
 from hal import hal_led as led
 from hal import hal_ir_sensor as ir_sensor
 import variables as g
+from hal import hal_adc as adc
 
 
 def main(ir_pytest=None, ir_sensor_state=None):
+    timeUntilWarning = 10
+    min_time = 15
+    max_time = 20 * 60  # 1200 seconds (20 minutes)
     if ir_pytest is None:
         g.out_of_order = True
         g.BurglarState = True
@@ -22,8 +26,14 @@ def main(ir_pytest=None, ir_sensor_state=None):
     get_ir_state = ir_sensor.get_ir_sensor_state if ir_sensor_state is None else lambda: ir_sensor_state
 
     # In a real scenario, 10 seconds will be changed to 3minutes and 15 seconds
-    while time.time() - g.elapsed <= 10 and not get_ir_state():
-        if (time.time() - g.elapsed >= 5):  # In a real scenario, 5 seconds will be changed to 3minutes
+    while time.time() - g.elapsed <= (timeUntilWarning+5) and not get_ir_state():
+        if (timeUntilWarning != min_time + (adc.get_adc_value(1) / 1023) * (max_time - min_time) and not g.stillthere_event.is_set()):
+            timeUntilWarning = min_time + \
+                (adc.get_adc_value(1) / 1023) * (max_time - min_time)
+            g.elapsed = time.time()
+
+        # In a real scenario, 5 seconds will be changed to 3minutes
+        if (time.time() - g.elapsed >= timeUntilWarning):
             if not g.security_prompt:
                 g.stillthere_event.set()
                 if ir_pytest is None:
@@ -36,6 +46,12 @@ def main(ir_pytest=None, ir_sensor_state=None):
             unlock_door(security_thread)
             g.security_prompt = False
             g.f6_test_flag_1 = True
+        elif (time.time() - g.elapsed <= timeUntilWarning):
+            remaining = timeUntilWarning - (time.time() - g.elapsed)
+            minutes = int(remaining // 60)
+            seconds = int(remaining % 60)
+            g.lcd_queue.put((f"{minutes:02d}m {seconds:02d}s", 2))
+        time.sleep(1)
     timeout()
     g.last_key_time = time.time()
     g.BurglarState = False
@@ -54,6 +70,9 @@ def unlock_door(security_thread):
     servo.set_servo_position(90)
     g.lcd_queue.put("clear")
     g.lcd_queue.put(("Door Unlocked", 1))
+    time.sleep(3)
+    g.lcd_queue.put("clear")
+    g.lcd_queue.put(("Warning in:", 1))
     g.stillthere = False
     if security_thread.is_alive():
         security_thread.join()
