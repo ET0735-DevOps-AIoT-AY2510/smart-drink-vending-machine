@@ -1,10 +1,13 @@
+from unittest.mock import patch
 import threading
 import variables as g
 import F8_burglar_detection as f8
 import time
 
 
-def test_door_was_pried_open():
+@patch('variables.accelerometer')
+def test_door_was_pried_open(mock_accelerometer):
+    mock_accelerometer.get_3_axis_adjusted.return_value = (0, 0, 0)
     g.f8_test_flag_1 = False
     g.f8_test_flag_2 = False
     g.BurglarState = False
@@ -12,7 +15,9 @@ def test_door_was_pried_open():
     assert g.f8_test_flag_1 is True and g.f8_test_flag_2 is False
 
 
-def test_door_is_closed():
+@patch('variables.accelerometer')
+def test_door_is_closed(mock_accelerometer):
+    mock_accelerometer.get_3_axis_adjusted.return_value = (0, 0, 0)
     g.f8_test_flag_1 = False
     g.f8_test_flag_2 = False
     f8.main(pytest=1, ir_sensor_state=True)
@@ -20,7 +25,9 @@ def test_door_is_closed():
     assert g.f8_test_flag_1 is False and g.f8_test_flag_2 is False
 
 
-def test_door_was_pried_opened_then_closed():
+@patch('variables.accelerometer')
+def test_door_was_pried_opened_then_closed(mock_accelerometer):
+    mock_accelerometer.get_3_axis_adjusted.return_value = (0, 0, 0)
     g.f8_test_flag_1 = False
     g.f8_test_flag_2 = False
     sensor_state = [False]  # Use a list to make it mutable

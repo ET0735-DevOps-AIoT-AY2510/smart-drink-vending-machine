@@ -6,7 +6,11 @@ from threading import Thread
 import variables as g
 
 
+SHAKE_THRESHOLD = 0.15
+
+
 def main(pytest=None, ir_sensor_state=None):
+    last_x, last_y, last_z = g.accelerometer.get_3_axis_adjusted()
     if ir_sensor_state is None:
         get_ir_state = ir_sensor.get_ir_sensor_state
     elif callable(ir_sensor_state):
@@ -14,7 +18,12 @@ def main(pytest=None, ir_sensor_state=None):
     else:
         def get_ir_state(): return ir_sensor_state
     while pytest is None or pytest == 1:
-        if not g.BurglarState and not get_ir_state():
+
+        x, y, z = g.accelerometer.get_3_axis_adjusted()
+        delta_x = abs(x - last_x)
+        delta_y = abs(y - last_y)
+        delta_z = abs(z - last_z)
+        if not g.BurglarState and (not get_ir_state() or delta_x > SHAKE_THRESHOLD or delta_y > SHAKE_THRESHOLD or delta_z > SHAKE_THRESHOLD):
             g.stillthere_event.set()
             security_thread = Thread(target=g.stillthere_func)
             security_thread.start()
@@ -22,10 +31,17 @@ def main(pytest=None, ir_sensor_state=None):
             if pytest is None:
                 camera_thread.start()
 
-            while (not g.BurglarState and not get_ir_state() and (pytest is None or pytest == 1)) or camera_thread.is_alive():
+            while (not g.BurglarState and (not get_ir_state() or delta_x > SHAKE_THRESHOLD or delta_y > SHAKE_THRESHOLD or delta_z > SHAKE_THRESHOLD) and (pytest is None or pytest == 1)) or camera_thread.is_alive():
+                current_time = time.time()
+                if time.time() - current_time > 2:
+                    last_x, last_y, last_z = x, y, z
                 # So that it does not keep sending emails and continuously locks the door
                 servo.set_servo_position(0)
                 time.sleep(0.1)
+                x, y, z = g.accelerometer.get_3_axis_adjusted()
+                delta_x = abs(x - last_x)
+                delta_y = abs(y - last_y)
+                delta_z = abs(z - last_z)
                 g.f8_test_flag_1 = True
                 if pytest is not None:
                     pytest += 1

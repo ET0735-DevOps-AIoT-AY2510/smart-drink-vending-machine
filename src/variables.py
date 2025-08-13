@@ -11,6 +11,7 @@ from hal import hal_servo as servo
 from hal import hal_buzzer as buzzer
 from hal import hal_usonic as us
 from hal import hal_adc as adc
+from hal import hal_accelerometer as accel
 from threading import Thread, Event
 import time
 import queue
@@ -153,3 +154,4 @@ servo.init()
 keypad.init(key_pressed)
 us.init()
 adc.init()
+accelerometer = accel.init()
