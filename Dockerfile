@@ -52,14 +52,19 @@ ENV PYTHONPATH=/app
 ENV FLASK_APP=src/main.py
 ENV FLASK_ENV=production
 
-# Startup script (only runs main app)
+# Change working directory to src
+WORKDIR /app/src
+
+# Startup script (runs database_setup.py first, then F123456789.py)
 RUN echo '#!/bin/bash\n\
+echo "Setting up database..."\n\
+python3 database_setup.py\n\
 echo "Starting main application..."\n\
-python3 src/F123456789.py' > /app/start.sh \
- && chmod +x /app/start.sh
+python3 F123456789.py' > start.sh \
+ && chmod +x start.sh
 
 # Expose Flask port
 EXPOSE 5000
 
 # Run the startup script
-CMD ["/app/start.sh"]
+CMD ["./start.sh"]

@@ -27,6 +27,21 @@ from pyzbar.pyzbar import decode
 import numpy as np
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from main import app
+import os
+
+
+def update_temp_from_file():  # meant for testing temperature in real life (So that I can use settemp.py to manually change temperature)
+    temp_file_path = os.path.join(os.path.dirname(
+        os.path.abspath(__file__)), 'temp_live.txt')
+    while True:
+        try:
+            if os.path.exists(temp_file_path):
+                with open(temp_file_path, 'r') as f:
+                    new_temp = float(f.read().strip())
+                    g.temp = new_temp
+        except (ValueError, FileNotFoundError):
+            pass  # Ignore errors if the file is empty, not a valid float, or doesn't exist
+        time.sleep(1)  # Check every second
 
 
 def run_flask_app():
@@ -34,6 +49,8 @@ def run_flask_app():
 
 
 def main():
+    temp_update_thread = Thread(target=update_temp_from_file, daemon=True)
+    temp_update_thread.start()
     flask_thread = Thread(target=run_flask_app, daemon=True)
     flask_thread.start()
     lcd_print_thread = Thread(target=display.lcd_print, daemon=True)
@@ -43,7 +60,7 @@ def main():
     keypad_thread.start()
     inactivity_thread = Thread(target=f1.inactivity_check, daemon=True)
     inactivity_thread.start()
-    f4.main()
+    # f4.main() # removed for testing
     f8_main_thread = Thread(target=f8.main)
     f8_main_thread.start()
     f9.main()

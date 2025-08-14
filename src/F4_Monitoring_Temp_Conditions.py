@@ -1,6 +1,7 @@
 import time
 from threading import Thread
 import variables as g
+from hal import hal_temp_humidity_sensor as temp_humid
 
 
 def main():
@@ -10,9 +11,8 @@ def main():
 
 def tempGet():  # constantly gets temp through thread in main
     while True:
-        time.sleep(10)
-        g.temp = 11  # temp value for testing
-        # g.temp, _ = temp_humid.read_temp_humidity()
+        time.sleep(1)
+        g.temp, _ = temp_humid.read_temp_humidity()
 
 
 def temp_Monitor():
