@@ -68,11 +68,11 @@ def main():
     main_menu_thread.start()
     f1.homescreen()
     while True:
-        if not g.check10 and g.temp > 10:
-            f4.temp_Monitor()
-        elif not g.check20 and g.temp > 20:
+        if not g.check20 and g.temp > 20:
             ledBlink_thread = Thread(target=g.ledBlink, daemon=True)
             ledBlink_thread.start()
+            f4.temp_Monitor()
+        elif not g.check10 and g.temp > 10:
             f4.temp_Monitor()
         elif not g.emailCheckLeak and g.moist:
             ledBlink_thread = Thread(target=g.ledBlink, daemon=True)
