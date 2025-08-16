@@ -1,27 +1,46 @@
-# Python
-*.pyc
+# Python build artifacts and caches
 __pycache__/
+*.py[cod]
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+
+# Virtual environments
+env/
 venv/
 .venv/
 
-# Database
+# Database files
 *.db
 *.sqlite3
+data/
 
 # Generated files
 src/static/barcodes/
 
-# Pytest cache
+# Test caches
 .pytest_cache/
 
 # IDE-specific files
 .vscode/
+.idea/
 
 # Operating System files
 .DS_Store
 Thumbs.db
 
-# Logs and temporary files
+# Log files
 *.log
+logs/
+
+# Temporary files
 *.tmp
 tmp/
+*.swp
+*.swo
+
+# Dependency management
+pip-log.txt
+pip-delete-this-directory.txt
